@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Globe } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -10,6 +11,11 @@ interface LanguageToggleProps {
 
 export default function LanguageToggle({ variant = 'light' }: LanguageToggleProps) {
   const { language, setLanguage } = useLanguage();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleLanguage = () => {
     setLanguage(language === 'en' ? 'hi' : 'en');
@@ -20,15 +26,18 @@ export default function LanguageToggle({ variant = 'light' }: LanguageToggleProp
       ? 'bg-white text-epfo-indigo border-white hover:bg-gray-100'
       : 'bg-white text-epfo-indigo border-gray-300 hover:bg-gray-50';
 
+  const label = !mounted ? 'हिंदी' : language === 'en' ? 'हिंदी' : 'English';
+
   return (
     <button
       type="button"
       onClick={toggleLanguage}
       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-colors text-sm font-semibold shadow-sm ${styles}`}
       aria-label="Toggle language"
+      suppressHydrationWarning
     >
       <Globe className="w-3.5 h-3.5" />
-      <span>{language === 'en' ? 'हिंदी' : 'English'}</span>
+      <span suppressHydrationWarning>{label}</span>
     </button>
   );
 }
