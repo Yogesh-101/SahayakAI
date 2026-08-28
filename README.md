@@ -2,15 +2,36 @@
 
 **AI-Powered EPFO Claims Tracker for Citizens**
 
-> Built for the **Build What Moves India** Hackathon
+> Built for the **Build What Moves India** Hackathon  
+> **Hackathon prototype only** — not an official government product. All claim/KYC data is mock.
+
+**Live demo:** [https://sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app)  
+**Judge walkthrough:** [https://sahayak-ai-brown.vercel.app/demo](https://sahayak-ai-brown.vercel.app/demo)
 
 SahayakAI transforms India's opaque EPFO claim tracking into a transparent, AI-powered experience. Citizens see real-time stage-by-stage progress, get AI diagnosis of bottlenecks, and receive actionable resolution guidance—all via WhatsApp notifications.
+
+### Hackathon compliance
+
+This project follows the Build What Moves India rules:
+
+| Rule | How we comply |
+|------|----------------|
+| No live government system access | All EPFO data comes from local mock APIs (`/api/claim/*`); no calls to EPFO portals |
+| No undocumented/private APIs | No reverse-engineering or scraping |
+| No real sensitive data | Fictional demo UANs and sample names only — no real Aadhaar, PAN, OTP, or payment details |
+| Not presented as official | Footer disclaimer and page metadata state "hackathon prototype" |
+| No government logos implying approval | Removed Government of India bar, national emblem assets, and EPFO-watermarked hero image |
+| Original work | Built for this hackathon; mock data and original SahayakAI branding |
 
 ---
 
 ## 🎯 The Problem
 
-**8 crore+ EPFO members** file PF withdrawal, loan, and pension claims annually. The EPFO portal shows only:
+### Why I built this
+
+When I checked my own PF withdrawal claim on the EPFO member portal, the only status shown was **"UNDER PROCESS"** — with no update for weeks. I had no way to know whether my employer, KYC, or EPFO sanction was holding it up, and no clear steps to fix it. That frustration — checking daily, calling the helpline, and still getting no answers — is what SahayakAI is designed to solve.
+
+**8 crore+ EPFO members** face the same opacity every year. The EPFO portal typically shows only:
 
 ```
 Status: UNDER PROCESS
@@ -57,17 +78,17 @@ Step-by-step instructions for 5 blocker types:
 - Payment failed → Bank verification steps
 - Normal processing → Estimated timeline
 
-### 4️⃣ **WhatsApp Notifications (India Stack)**
-Real-time alerts via WhatsApp Business API:
+### 4️⃣ **WhatsApp Notifications (Mock Preview)**
+Simulated alerts showing how WhatsApp notifications would work:
 - Status changes
 - Blocker detection
 - Settlement confirmation
 - Reminder nudges
 
-### 5️⃣ **Multilingual Support (22 Languages)**
-- Hindi UI translations
-- Voice input via BHASHINI (India's National Language Translation Mission)
-- Works for citizens with low digital literacy
+### 5️⃣ **Multilingual Support (Hindi + English)**
+- Hindi and English UI translations today
+- Mock BHASHINI voice input on the claim check page
+- Additional languages planned via BHASHINI in production
 
 ### 6️⃣ **Pre-Filing KYC Health Checker** *(NEW)*
 - Cross-checks Name, DOB across EPFO, PAN, and Aadhaar records
@@ -170,7 +191,7 @@ Real-time alerts via WhatsApp Business API:
 
 ## 📖 Demo Walkthrough
 
-### For Judges: Start Here 👉 [http://localhost:3000/demo](http://localhost:3000/demo)
+### For Judges: Start Here 👉 [https://sahayak-ai-brown.vercel.app/demo](https://sahayak-ai-brown.vercel.app/demo)
 
 The interactive demo guides you through:
 1. Before/After comparison (EPFO vs SahayakAI)
@@ -212,8 +233,7 @@ The interactive demo guides you through:
 sahayak-ai/
 ├── public/                     # Static assets
 │   ├── logo.svg, favicon.svg
-│   ├── india-flag.svg, india-emblem.svg
-│   └── hero-workers.jpg        # EPFO-style hero banner
+│   ├── hero-illustration.svg   # Original abstract hero art (no gov logos)
 ├── src/
 │   ├── app/                    # Next.js App Router
 │   │   ├── page.tsx            # Homepage (EPFO-themed)
@@ -259,7 +279,6 @@ sahayak-ai/
 │   │   └── mock-data/claims.ts # 4 demo scenarios
 │   └── types/                  # claim.ts, diagnosis.ts
 ├── ARCHITECTURE.md             # System design & data flows
-├── DEMO_SCRIPT.md              # 2–3 min judge presentation script
 ├── .env.example
 ├── tailwind.config.ts          # EPFO brand colors + animations
 └── README.md
@@ -334,7 +353,7 @@ This allows:
 - **Navy** (`#1a237e`) — Headings, primary CTAs, navbar accents
 - **Purple** (`#7c3aed`) — Hero highlights, accent text
 - **Lavender gradient** — Hero background (light left → dark right)
-- **Government identity bar** — Indian flag, "भारत सरकार | Government of India"
+- **Footer disclaimer** — States hackathon prototype status and non-affiliation with EPFO or Government of India
 - **GovPageShell** — Shared layout for inner pages (breadcrumbs, footer, scroll-to-top)
 
 **Components (shadcn/ui):**
@@ -418,10 +437,10 @@ npm run lint      # Run ESLint
 ✅ 11 integrated features across 9 routes  
 ✅ Demonstrable: 4 complete scenarios, runs locally in 2 minutes
 
-### **3. India Stack Integration**
-✅ WhatsApp Business API (notifications)  
-✅ BHASHINI (voice input, multilingual)  
-✅ Ready for DigiLocker (KYC verification)
+### **3. India Stack Integration (Mock Previews)**
+🔶 WhatsApp Business API — mock preview of notifications  
+🔶 BHASHINI — mock voice input (Hindi + English UI today)  
+🔶 DigiLocker — planned for production KYC verification
 
 ### **4. Scalability**
 ✅ Pattern applies to **all government services**  
@@ -431,8 +450,8 @@ npm run lint      # Run ESLint
 ### **5. User Experience**
 ✅ Transparent (stage-by-stage visibility)  
 ✅ Actionable (resolution guidance)  
-✅ Accessible (Hindi, voice input, mobile-first)  
-✅ Proactive (WhatsApp notifications)
+✅ Accessible (Hindi + English, mock voice input, mobile-first)  
+🔶 Proactive alerts shown as WhatsApp mock preview
 
 ---
 
@@ -458,19 +477,19 @@ npm run lint      # Run ESLint
 | API routes (`/api/claim/status`, `/api/claim/diagnose`) | ✅ Working |
 | README.md | ✅ Updated |
 | ARCHITECTURE.md | ✅ Updated |
-| DEMO_SCRIPT.md | ✅ Updated |
 | `.env.example` | ✅ Included |
 
 **Demo UANs:** `123456789` (blocked) · `987654321` (KYC) · `555555555` (processing) · `111111111` (settled)
 
-**Judge entry point:** [http://localhost:3000/demo](http://localhost:3000/demo)
+**Judge entry point:** [https://sahayak-ai-brown.vercel.app/demo](https://sahayak-ai-brown.vercel.app/demo)
 
 ---
 
 ## 📧 Contact
 
 **Repository:** [github.com/Yogesh-101/SahayakAI](https://github.com/Yogesh-101/SahayakAI)  
-**Demo:** Run locally — `npm install --legacy-peer-deps && npm run dev`
+**Live demo:** [https://sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app)  
+**Local dev:** `npm install --legacy-peer-deps && npm run dev` → `http://localhost:3000`
 
 ---
 
