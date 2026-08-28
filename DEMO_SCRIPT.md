@@ -1,6 +1,6 @@
 # 🎬 Demo Script for Judges
 
-**Time: 2-3 minutes | Goal: Show the transformation from opaque to transparent**
+**Time: 2–3 minutes | Goal: Show the transformation from opaque to transparent**
 
 ---
 
@@ -13,6 +13,20 @@
 > "They don't know why it's delayed, what stage is blocked, or what to do. This creates millions of helpline calls and endless frustration."
 
 > "We built SahayakAI to transform this opaque experience into complete transparency with AI-powered guidance."
+
+---
+
+## 🏠 Homepage (15 seconds)
+
+**Navigate to:** [http://localhost:3000](http://localhost:3000)
+
+**Point out:**
+- EPFO-inspired government design (Indian flag, Government of India bar)
+- Hero with worker imagery and clear CTAs
+- 11 integrated citizen empowerment tools
+- Hindi/English toggle in the top bar
+
+**Say:** "This feels like a trusted government portal — but with AI superpowers underneath."
 
 ---
 
@@ -44,87 +58,79 @@
 
 **Navigate to:** [http://localhost:3000/claim/check](http://localhost:3000/claim/check)
 
-**Say:** "Let me show you a real scenario—employer hasn't approved the claim for 15 days."
+**Say:** "Let me show you a real scenario — employer hasn't approved the claim for 15 days."
 
 1. **Enter UAN:** `123456789` (or click the demo badge)
 2. **Show voice input:** Click mic icon → "This uses BHASHINI for voice in 22 languages"
 3. **Click:** "Check Status"
 
-**Claim Detail Page:**
+**Claim Detail Page (6 sections):**
 
 **Point out:**
-- ✅ **Stage timeline** — Visual progress (Stage 1 completed, Stage 2 blocked)
-- ✅ **Time in stage** — "Blocked for 15 days"
-- ✅ **AI Diagnosis** (scroll down):
+- ✅ **Section 1 — Claim Overview:** Amount, employer, status badge
+- ✅ **Section 2 — Stage Timeline:** Visual progress (Stage 1 completed, Stage 2 blocked for 15 days)
+- ✅ **Section 3 — AI Diagnosis:**
   - Problem: "Your employer has not approved your claim yet"
-  - Confidence: 92%
-  - Evidence: Clear explanation
-- ✅ **Click "Show Resolution Steps"**:
-  - 5 actionable steps
-  - Email template
-  - Escalation path
-  - EPFO helpline numbers
+  - Confidence: 90%
+  - Click "Show Resolution Steps" → 5 actionable steps
+- ✅ **Section 3 — Smart Email:** AI-generated employer email with EPFO circular references
 
-**Say:** "The citizen now knows exactly what's wrong and how to fix it—without calling the helpline."
+**Say:** "The citizen now knows exactly what's wrong and how to fix it — without calling the helpline."
 
 ---
 
-## 📱 WhatsApp Notifications (20 seconds)
-
-**Scroll to:** WhatsApp Notifications card
-
-**Show:** Real-time notification history
-- ✅ Claim filed confirmation
-- 🚨 Blocker detected alert
-- ⏰ Reminder nudge
-- 🎉 Settlement notification
-
-**Say:** "Citizens get WhatsApp alerts at every stage—they never need to check the portal. This is India Stack's WhatsApp Business API integration."
-
----
-
-## 🌐 Quick Feature Highlights (20 seconds)
-
-**Click:** Language toggle (हिंदी ↔ English) in header
-
-**Say:** "Full Hindi support, voice input in 22 languages via BHASHINI."
-
-**Navigate to:** [http://localhost:3000/claim/111111111](http://localhost:3000/claim/111111111)
-
-**Show:** Settled claim with success message
-
-**Say:** "When the claim settles, citizens get instant confirmation."
-
----
-
-## 🛠️ NEW: Advanced Citizen Empowerment Tools (40 seconds)
+## 🛠️ Advanced Citizen Empowerment Tools (40 seconds)
 
 **Say:**
 
 > "Beyond tracking, SahayakAI provides 6 tools that NO other platform offers."
 
-**1. Scroll down on claim page → show Peer Comparison widget:**
-- "Your claim is slower than 65% of similar claims" — creates urgency for action.
+**Scroll down on claim page:**
 
-**2. Show Financial Impact Calculator:**
-- "Rs X,XXX lost so far at Rs Y/day" — makes delay tangible in rupees.
+**1. Section 4 — Peer Comparison:**
+- "Your claim is slower than 54% of similar claims" — creates urgency.
 
-**3. Show Know Your Rights panel:**
-- Context-aware rights based on stage and delay. Legal references like EPF Act Section 14B.
+**2. Section 4 — Financial Impact:**
+- "Rs 1,335 lost so far at Rs 89/day" — makes delay tangible in rupees.
 
-**4. Show Smart Email Generator (for employer-blocked claims):**
-- AI-generated email with legal deadlines and EPFO circular references.
-- One-click copy and follow-up tracking.
+**3. Section 5 — Know Your Rights:**
+- Context-aware rights with legal references (CITES 2026, EPF Act 1952).
+- Direct links to EPFiGMS, RTI, CPGRAMS.
 
-**5. Navigate to:** [http://localhost:3000/tools/kyc-check](http://localhost:3000/tools/kyc-check)
+**4. Navigate to:** [http://localhost:3000/tools/kyc-check](http://localhost:3000/tools/kyc-check)
 - Enter `123456789` → Show traffic-light KYC health score with mismatches.
 - "This prevents 30% of claim delays by checking BEFORE filing."
 
-**6. Navigate to:** [http://localhost:3000/tools/escalate](http://localhost:3000/tools/escalate)
+**5. Navigate to:** [http://localhost:3000/tools/escalate](http://localhost:3000/tools/escalate)
 - Enter `123456789` → Show auto-generated EPFiGMS, RTI, and CPGRAMS documents.
 - "One click generates legally-valid escalation documents with proper references."
 
 **Say:** "These tools shift the power balance from opaque bureaucracy to empowered citizen."
+
+---
+
+## 📱 WhatsApp Notifications (15 seconds)
+
+**Scroll to Section 6 on claim page:** WhatsApp Notifications
+
+**Show:** Real-time notification history
+- ✅ Claim filed confirmation
+- 🚨 Blocker detected alert
+- ⏰ Reminder nudge
+
+**Say:** "Citizens get WhatsApp alerts at every stage — they never need to check the portal."
+
+---
+
+## 🌐 Multilingual (10 seconds)
+
+**Click:** Language toggle (हिंदी ↔ English) in the government top bar
+
+**Say:** "Full Hindi support across homepage and all inner pages."
+
+**Navigate to:** [http://localhost:3000/claim/111111111](http://localhost:3000/claim/111111111)
+
+**Show:** Settled claim with success message
 
 ---
 
@@ -134,7 +140,7 @@
 
 > "This reduces helpline calls by 60%+, empowering citizens to self-serve. With 8 crore EPFO members, that's millions of resolved queries."
 
-> "But this pattern applies to **every government service**—PAN cards, passports, Aadhaar updates. We've built a scalable solution for all citizen-government interactions."
+> "But this pattern applies to **every government service** — PAN cards, passports, Aadhaar updates."
 
 ---
 
@@ -142,12 +148,12 @@
 
 **Say:**
 
-> "Built with Next.js 14, TypeScript, OpenAI GPT-3.5-Turbo for diagnosis, India Stack integrations. It's production-ready with mock adapters that swap out for real APIs in minutes."
+> "Built with Next.js 16, TypeScript, OpenAI GPT-3.5-Turbo, India Stack integrations. Production-ready with mock adapters that swap out for real APIs in minutes."
 
-**Show:** Code structure (optional, if judges ask)
-- `src/lib/adapters/` — Mock EPFO API ready for production
-- `src/lib/services/diagnosis-service.ts` — AI + rule-based fallback
-- `src/components/` — Reusable, accessible UI components
+**Show (if asked):**
+- `src/lib/adapters/` — Mock EPFO API
+- `src/lib/services/` — 6 service modules
+- `src/components/GovPageShell.tsx` — Shared government layout
 
 ---
 
@@ -159,73 +165,49 @@
 
 ---
 
-## 🔑 Key Talking Points (If Asked)
+## 🔑 Demo UANs
 
-### "How does the AI work?"
-- GPT-3.5-Turbo analyzes claim data (stage, status, time, blocker reason)
-- Returns plain-language diagnosis with confidence scoring
-- Falls back to rule-based engine if no API key (so it always works)
-
-### "How do you integrate with EPFO?"
-- We use adapter pattern: `src/lib/adapters/epfo-adapter.ts`
-- Currently mocked with realistic scenarios
-- Production: Swap mock with EPFO Unified Member Portal API calls
-- Estimated integration time: 1-2 weeks
-
-### "What about WhatsApp costs?"
-- WhatsApp Business API pricing: ₹0.25–₹0.50 per notification
-- Estimated cost per claim: ₹2–₃ (4-6 notifications)
-- ROI: Massive savings on helpline infrastructure vs. ₹2 per claim
-
-### "Can this scale to 8 crore users?"
-- Yes, it's serverless-ready (Next.js, Vercel, or NIC cloud)
-- Mock adapters → production APIs (no architecture change)
-- Horizontal scaling built-in (edge deployment, caching)
-
-### "Why did you choose EPFO?"
-- 8 crore+ users, genuinely painful problem
-- Documented on EPFO grievance portal (real pain points)
-- Pattern applies to all government services
-- Validated by hackathon theme ("Move India")
+| UAN | Scenario | Best For |
+|-----|----------|----------|
+| `123456789` | Employer Block (15 days) | Full feature demo |
+| `987654321` | KYC Mismatch | KYC Health Check |
+| `555555555` | Normal Processing | Timeline in progress |
+| `111111111` | Settled | Success state |
 
 ---
 
 ## 🎥 Recording Tips (for Submission Video)
 
 1. **Start with the hook** (EPFO portal screenshot)
-2. **Show before/after** (side-by-side comparison)
-3. **Live demo with narration** (UAN 123456789)
-4. **Highlight WhatsApp** (scroll through notifications)
-5. **Quick feature tour** (language toggle, voice input, settled claim)
-6. **Impact statement** (60%+ reduction, 8 crore users)
-7. **Close with call to action** (ready to deploy)
+2. **Show homepage** (government branding, hero, tools)
+3. **Show before/after** (`/demo`)
+4. **Live demo with narration** (UAN `123456789`)
+5. **Scroll through all 6 claim sections**
+6. **Quick tool tour** (KYC Check + Legal Escalation)
+7. **Language toggle** (Hindi switch)
+8. **Impact statement** (60%+ reduction, 8 crore users)
+9. **Close with call to action**
 
-**Total video length:** 2 minutes max
+**Total video length:** 2–3 minutes max
 
 ---
 
 ## 📝 Judge Q&A Preparation
 
-### Common Questions:
-
 **Q: Is this just a UI wrapper?**
-A: No—we've built AI diagnosis (GPT-3.5), resolution guides, mock APIs, and a full production architecture. It's not just status display; it's actionable intelligence.
+A: No — AI diagnosis (GPT-3.5), 6 service modules, resolution guides, legal document generation, rights engine, and full production architecture.
 
 **Q: How is this different from EPFO's portal?**
-A: EPFO shows "Under Process." We show:
-- Which stage is blocked
-- Why it's blocked (AI diagnosis)
-- What to do (resolution steps)
-- Real-time WhatsApp alerts
+A: EPFO shows "Under Process." We show which stage is blocked, why (AI diagnosis), what to do (resolution steps), financial cost of delay, legal rights, and real-time WhatsApp alerts.
 
 **Q: Can I try it now?**
-A: Yes! Clone the repo, run `npm install && npm run dev`, open localhost:3000. 2 minutes to demo.
+A: Yes! Clone the repo, run `npm install --legacy-peer-deps && npm run dev`, open localhost:3000. 2 minutes to demo.
 
 **Q: What if OpenAI API is down?**
-A: We have a rule-based fallback that still provides diagnosis—no single point of failure.
+A: Rule-based fallback still provides diagnosis — no single point of failure.
 
-**Q: How do you handle Hindi/regional languages?**
-A: UI translations in Context API (currently English + Hindi). Voice input via BHASHINI supports 22 languages. Easy to add more.
+**Q: How do you handle Hindi?**
+A: Full UI translations via LanguageContext (English + Hindi). Toggle in the government top bar on every page.
 
 ---
 

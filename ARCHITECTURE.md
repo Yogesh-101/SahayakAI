@@ -6,79 +6,103 @@
 Citizen (Web / WhatsApp / Voice)
         │
         ▼
-┌─────────────────────────┐
-│   Next.js Frontend      │  React 18, App Router, Tailwind CSS
-│   (Pages + Components)  │  LanguageContext (i18n), ErrorBoundary
-└───────────┬─────────────┘
+┌─────────────────────────────────────────┐
+│   Next.js Frontend (React 18)           │
+│   App Router · Tailwind · shadcn/ui     │
+│   LanguageContext (EN/HI) · GovPageShell│
+└───────────┬─────────────────────────────┘
             │ fetch()
             ▼
-┌─────────────────────────┐
-│   Next.js API Routes    │  /api/claim/status   → Mock EPFO adapter
-│   (Server-side)         │  /api/claim/diagnose → Diagnosis service
-└───────────┬─────────────┘
+┌─────────────────────────────────────────┐
+│   Next.js API Routes (Server-side)      │
+│   GET  /api/claim/status                │
+│   POST /api/claim/diagnose              │
+└───────────┬─────────────────────────────┘
             │
-    ┌───────┼───────┐
-    ▼       ▼       ▼
-┌───────┐ ┌─────┐ ┌──────┐
-│ EPFO  │ │OpenAI│ │Rules │
-│Adapter│ │ API  │ │Engine│
-└───────┘ └─────┘ └──────┘
-  (Mock)    (GPT)   (Fallback)
+    ┌───────┼───────────────┬──────────────┐
+    ▼       ▼               ▼              ▼
+┌───────┐ ┌─────┐   ┌────────────┐  ┌──────────┐
+│ EPFO  │ │OpenAI│   │ Rule-based │  │ Client   │
+│Adapter│ │ API  │   │  Engine    │  │ Services │
+└───────┘ └─────┘   └────────────┘  └──────────┘
+  (Mock)    (GPT)      (Fallback)    (KYC, Legal,
+                                     Rights, Email)
 ```
+
+## Feature Map
+
+| Feature | UI Component | Service / Logic | Page |
+|---------|-------------|-----------------|------|
+| Stage Tracking | `ClaimStatusTimeline` | `epfo-adapter` | `/claim/[id]` |
+| AI Diagnosis | `DiagnosisPanel` | `diagnosis-service` → `/api/claim/diagnose` | `/claim/[id]` |
+| Resolution Steps | `DiagnosisPanel` | `resolution-guides` | `/claim/[id]` |
+| Smart Email | `EmailTracker` | `email-generator` | `/claim/[id]` |
+| Peer Comparison | `PeerComparison` | Mock analytics (inline) | `/claim/[id]` |
+| Financial Impact | `FinancialImpact` | Inline calculation | `/claim/[id]` |
+| Know Your Rights | `RightsPanel` | `rights-engine` | `/claim/[id]` |
+| WhatsApp Preview | `WhatsAppPreview` | Generated from claim data | `/claim/[id]` |
+| KYC Health Check | `KYCHealthScore` | `kyc-validator` | `/tools/kyc-check` |
+| Legal Escalation | Escalate page UI | `legal-document-generator` | `/tools/escalate` |
+| Multilingual UI | `LanguageToggle` | `LanguageContext` | All pages |
+| Gov Layout | `GovPageShell` | Breadcrumbs, footer, top bar | Inner pages |
 
 ## Architecture Decisions
 
 ### 1. Server-Side AI Calls
 
-The OpenAI diagnosis runs **server-side** via `/api/claim/diagnose` route handler. This ensures:
+OpenAI diagnosis runs **server-side** via `/api/claim/diagnose`:
 - API key never reaches the client bundle
-- Secure token handling via `process.env.OPENAI_API_KEY`
-- Fallback to rule-based engine when no key is configured
+- Secure via `process.env.OPENAI_API_KEY`
+- Falls back to rule-based engine when no key is configured
 
 ### 2. Adapter Pattern for External APIs
 
-All government services are accessed through adapters in `src/lib/adapters/`:
+All government services use adapters in `src/lib/adapters/`:
 
 ```
 ┌──────────────────┐     ┌──────────────────┐
 │   epfo-adapter   │────▶│  Mock Data       │  (Demo)
-│                  │     └──────────────────┘
-│   Interface:     │     ┌──────────────────┐
-│   fetchClaim()   │────▶│  Real EPFO API   │  (Production)
+│   fetchClaim()   │     └──────────────────┘
+│                  │     ┌──────────────────┐
+│                  │────▶│  Real EPFO API   │  (Production)
 └──────────────────┘     └──────────────────┘
 ```
 
-Swapping from mock to production requires changing only the adapter implementation — zero UI changes.
+Swapping mock → production requires only adapter changes — zero UI changes.
 
-### 3. Client/Server Boundary
+### 3. Client-Side Services for Empowerment Tools
+
+KYC validation, legal document generation, rights engine, and email generation run **client-side** with mock data for the hackathon demo. In production these would call:
+- EPFO KYC API / DigiLocker for KYC Health Check
+- EPFiGMS / RTI Online APIs for legal escalation
+- Email/SMS gateway for employer notifications
+
+### 4. Shared Government Layout (`GovPageShell`)
+
+Inner pages share a consistent shell:
+- Slim government identity bar (Indian flag + "Government of India")
+- Sticky header with logo, nav links, CTA
+- Breadcrumb navigation
+- Footer with helplines and EPFO resource links
+- Scroll-to-top button
+
+Homepage (`page.tsx`) uses its own inline header/hero/footer for the landing experience.
+
+### 5. Diagnosis Service — Dual Engine
 
 ```
-Server Components (layout.tsx)
-   └── LanguageProvider (client)
-        └── Page Components (client)
-             ├── DiagnosisPanel → fetches /api/claim/diagnose
-             ├── WhatsAppPreview → client-only mock
-             └── VoiceInput → client-only mock
-```
-
-Pages are `'use client'` because they use React hooks (useState, useEffect, useContext).
-The diagnosis API call crosses the client/server boundary via `fetch()`.
-
-### 4. Diagnosis Service — Dual Engine
-
-```
-Request → /api/claim/diagnose (POST)
+Request → POST /api/claim/diagnose
    │
-   ├── OpenAI available? → GPT-3.5-Turbo analysis
+   ├── OPENAI_API_KEY set? → GPT-3.5-Turbo analysis
    │      └── Parse JSON → Validate → Return Diagnosis
    │
    └── No API key? → Rule-based engine
           └── Match stage + status + duration → Return Diagnosis
 ```
 
-Both engines return the same `Diagnosis` interface, making the AI transparent to the UI.
+Both engines return the same `Diagnosis` interface.
 
-### 5. Internationalization (i18n)
+### 6. Internationalization (i18n)
 
 ```
 LanguageContext (React Context)
@@ -87,67 +111,102 @@ LanguageContext (React Context)
    └── t(key) → lookup in translations map
 ```
 
-Translations live in the context file, not separate JSON files, for hackathon simplicity.
-Production would use a proper i18n library like `next-intl`.
+Homepage, claim pages, tool pages, and GovPageShell all use `t()` for user-facing text.
 
 ## Directory Structure
 
 ```
 src/
-├── app/                     # Next.js App Router pages
-│   ├── api/                 # Server-side API routes
-│   │   └── claim/
-│   │       ├── diagnose/    # POST: AI diagnosis (server-side OpenAI)
-│   │       └── status/      # GET: Claim lookup
+├── app/
+│   ├── api/claim/
+│   │   ├── diagnose/route.ts    # POST: server-side OpenAI diagnosis
+│   │   └── status/route.ts      # GET: claim lookup
 │   ├── claim/
-│   │   ├── check/           # UAN input form
-│   │   └── [id]/            # Dynamic claim detail page
-│   ├── demo/                # Interactive demo walkthrough
-│   └── layout.tsx           # Root layout + providers
+│   │   ├── check/page.tsx       # UAN input + voice
+│   │   └── [id]/page.tsx        # Claim dashboard (6 sections)
+│   ├── tools/
+│   │   ├── kyc-check/page.tsx   # KYC Health Checker
+│   │   └── escalate/page.tsx    # Legal Escalation
+│   ├── demo/page.tsx            # Judge walkthrough
+│   ├── page.tsx                 # Homepage
+│   ├── layout.tsx               # Root layout + providers
+│   └── globals.css              # EPFO animations + utilities
 │
 ├── components/
-│   ├── ui/                  # shadcn/ui primitives
-│   │   ├── button, card, badge, dialog, toast, spinner, skeleton
-│   │   ├── toaster.tsx      # Toast notification container
-│   │   └── use-toast.ts     # Toast state management hook
-│   ├── ClaimStatusTimeline  # Visual stage progress
-│   ├── DiagnosisPanel       # AI diagnosis + resolution
-│   ├── WhatsAppPreview      # Mock notification UI
-│   ├── VoiceInput           # Mock BHASHINI voice
-│   ├── BeforeAfterComparison# EPFO vs SahayakAI
-│   ├── LanguageToggle       # EN/HI switcher
-│   └── ErrorBoundary        # React error boundary
+│   ├── ui/                      # shadcn/ui primitives
+│   ├── GovPageShell.tsx         # Shared gov layout
+│   ├── ClaimStatusTimeline.tsx
+│   ├── DiagnosisPanel.tsx
+│   ├── EmailTracker.tsx
+│   ├── PeerComparison.tsx
+│   ├── FinancialImpact.tsx
+│   ├── RightsPanel.tsx
+│   ├── KYCHealthScore.tsx
+│   ├── WhatsAppPreview.tsx
+│   ├── VoiceInput.tsx
+│   ├── BeforeAfterComparison.tsx
+│   ├── LanguageToggle.tsx
+│   └── ErrorBoundary.tsx
 │
 ├── contexts/
-│   └── LanguageContext       # i18n provider + translations
+│   └── LanguageContext.tsx
 │
 ├── lib/
 │   ├── adapters/
-│   │   └── epfo-adapter     # Mock EPFO API (swap for production)
+│   │   └── epfo-adapter.ts
 │   ├── services/
-│   │   ├── diagnosis-service # OpenAI + rule-based fallback
-│   │   └── resolution-guides # Step-by-step fix guides
+│   │   ├── diagnosis-service.ts
+│   │   ├── resolution-guides.ts
+│   │   ├── email-generator.ts
+│   │   ├── kyc-validator.ts
+│   │   ├── legal-document-generator.ts
+│   │   └── rights-engine.ts
 │   ├── mock-data/
-│   │   └── claims           # 4 demo scenarios
-│   └── utils.ts             # cn() class merge utility
+│   │   └── claims.ts            # 4 demo scenarios
+│   └── utils.ts
 │
 └── types/
-    ├── claim.ts             # ClaimStatus, StageStatus, ClaimStages
-    └── diagnosis.ts         # Diagnosis, NotificationEvent
+    ├── claim.ts
+    └── diagnosis.ts
 ```
 
-## Data Flow: Claim Check
+## Data Flow: Claim Dashboard
 
 ```
 1. User enters UAN on /claim/check
 2. Client calls epfo-adapter.fetchClaimStatus(uan)
-3. Adapter returns mock ClaimStatus (500ms simulated latency)
+3. Adapter returns mock ClaimStatus (~500ms simulated latency)
 4. Router navigates to /claim/{uan}
-5. Page fetches claim again and renders:
-   a. Summary card (amount, dates, employer)
-   b. ClaimStatusTimeline (4 stages)
-   c. DiagnosisPanel → POST /api/claim/diagnose
-   d. WhatsAppPreview (generated from claim data)
+5. GovPageShell wraps the page with gov header + breadcrumbs
+6. Page renders 6 sections:
+   a. Claim Overview (summary card)
+   b. Status & Tracking (ClaimStatusTimeline)
+   c. AI Diagnosis & Actions (DiagnosisPanel + EmailTracker)
+   d. Analytics & Insights (PeerComparison + FinancialImpact)
+   e. Legal Rights & Escalation (RightsPanel)
+   f. Notifications (WhatsAppPreview)
+```
+
+## Data Flow: KYC Health Check
+
+```
+1. User enters UAN on /tools/kyc-check
+2. Client calls validateKYC(uan) from kyc-validator.ts
+3. Service cross-checks Name, DOB, PAN, Aadhaar across mock records
+4. Returns KYCHealthResult with score, status, field checks, fix links
+5. KYCHealthScore component renders traffic-light UI
+```
+
+## Data Flow: Legal Escalation
+
+```
+1. User enters UAN on /tools/escalate
+2. Client fetches claim via epfo-adapter
+3. legal-document-generator.ts produces:
+   - EPFiGMS grievance (EPFO Circular references)
+   - RTI application (RTI Act 2005)
+   - CPGRAMS complaint (PM Office escalation)
+4. User copies pre-filled documents to clipboard
 ```
 
 ## Security Considerations
@@ -155,18 +214,20 @@ src/
 - **API Keys**: `OPENAI_API_KEY` is server-only (no `NEXT_PUBLIC_` prefix)
 - **Input Validation**: UAN sanitized before lookup
 - **CORS**: Next.js API routes are same-origin by default
-- **XSS**: React's JSX escaping prevents injection
-- **Demo Mode**: All mock data clearly labeled in UI
+- **XSS**: React JSX escaping prevents injection
+- **Demo Mode**: Mock integrations labeled in UI
 
 ## Production Migration Path
 
 | Component | Demo (Current) | Production |
 |-----------|---------------|------------|
-| EPFO Data | Mock adapter | Real EPFO Unified Portal API |
-| AI Diagnosis | OpenAI GPT-3.5 | OpenAI GPT-4 + fine-tuned model |
+| EPFO Data | Mock adapter | EPFO Unified Member Portal API |
+| AI Diagnosis | OpenAI GPT-3.5 | GPT-4 + fine-tuned model |
 | Notifications | UI preview | WhatsApp Business API |
 | Voice Input | Mock transcript | BHASHINI REST API |
-| KYC Verification | N/A | DigiLocker API |
-| Database | In-memory | PostgreSQL / Supabase |
+| KYC Verification | Mock cross-check | DigiLocker + EPFO KYC API |
+| Legal Escalation | Template generation | EPFiGMS / RTI Online API submit |
+| Email to Employer | Copy-to-clipboard | SMTP / transactional email API |
+| Database | In-memory / localStorage | PostgreSQL / Supabase |
 | Auth | None | EPFO OAuth + Aadhaar OTP |
 | Deployment | localhost | Vercel / NIC Cloud |

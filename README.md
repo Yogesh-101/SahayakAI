@@ -116,7 +116,7 @@ Real-time alerts via WhatsApp Business API:
 - **Shift power to citizens** — Legal tools, financial data, and rights awareness
 
 ### **Technical Excellence**
-- **Next.js 14** (App Router, Turbopack, Server Components)
+- **Next.js 16** (App Router, Turbopack, React Server Components)
 - **OpenAI GPT-3.5-Turbo** for diagnosis
 - **India Stack Integration** (WhatsApp Business API, BHASHINI)
 - **TypeScript strict mode** with comprehensive type safety
@@ -191,39 +191,78 @@ The interactive demo guides you through:
 
 ---
 
+## 🗺️ Routes & Pages
+
+| Route | Description |
+|-------|-------------|
+| `/` | Homepage — EPFO-inspired hero, features, tools, India Stack, CTA |
+| `/claim/check` | UAN input form with voice input and demo UAN shortcuts |
+| `/claim/[id]` | Claim dashboard — timeline, AI diagnosis, analytics, rights, WhatsApp |
+| `/tools/kyc-check` | Pre-filing KYC Health Checker (standalone tool) |
+| `/tools/escalate` | One-Click Legal Escalation — EPFiGMS, RTI, CPGRAMS |
+| `/demo` | Interactive guided demo for judges |
+| `/api/claim/status` | GET — claim lookup via EPFO adapter |
+| `/api/claim/diagnose` | POST — server-side AI diagnosis |
+
+---
+
 ## 🏗️ Project Structure
 
 ```
 sahayak-ai/
+├── public/                     # Static assets
+│   ├── logo.svg, favicon.svg
+│   ├── india-flag.svg, india-emblem.svg
+│   └── hero-workers.jpg        # EPFO-style hero banner
 ├── src/
-│   ├── app/                    # Next.js 14 App Router
-│   │   ├── page.tsx            # Homepage
+│   ├── app/                    # Next.js App Router
+│   │   ├── page.tsx            # Homepage (EPFO-themed)
+│   │   ├── layout.tsx          # Root layout, favicon, theme color
+│   │   ├── globals.css         # EPFO animations, gov-card utilities
+│   │   ├── api/claim/
+│   │   │   ├── status/route.ts # GET claim by UAN
+│   │   │   └── diagnose/route.ts # POST AI diagnosis (server-side)
 │   │   ├── claim/
-│   │   │   ├── check/          # UAN input form with voice
-│   │   │   └── [id]/           # Claim detail page
-│   │   └── demo/               # Interactive demo for judges
-│   ├── components/             # React components
-│   │   ├── ui/                 # shadcn/ui components
+│   │   │   ├── check/page.tsx  # UAN input + voice
+│   │   │   └── [id]/page.tsx   # Claim dashboard (6 sections)
+│   │   ├── tools/
+│   │   │   ├── kyc-check/page.tsx   # KYC Health Checker
+│   │   │   └── escalate/page.tsx    # Legal Escalation
+│   │   └── demo/page.tsx       # Judge walkthrough
+│   ├── components/
+│   │   ├── ui/                 # shadcn/ui primitives
+│   │   ├── GovPageShell.tsx    # Shared gov layout (header, breadcrumbs, footer)
 │   │   ├── ClaimStatusTimeline.tsx
 │   │   ├── DiagnosisPanel.tsx
+│   │   ├── EmailTracker.tsx    # Smart email + follow-up tracking
+│   │   ├── PeerComparison.tsx  # Claim benchmarking widget
+│   │   ├── FinancialImpact.tsx # Cost-of-delay calculator
+│   │   ├── RightsPanel.tsx     # Know Your Rights
+│   │   ├── KYCHealthScore.tsx  # KYC traffic-light display
 │   │   ├── WhatsAppPreview.tsx
 │   │   ├── VoiceInput.tsx
 │   │   ├── BeforeAfterComparison.tsx
-│   │   └── LanguageToggle.tsx
-│   ├── contexts/               # React contexts
-│   │   └── LanguageContext.tsx # i18n support
+│   │   ├── LanguageToggle.tsx
+│   │   └── ErrorBoundary.tsx
+│   ├── contexts/
+│   │   └── LanguageContext.tsx # English + Hindi i18n
 │   ├── lib/
-│   │   ├── adapters/           # API adapters (mock EPFO, DigiLocker, Payment)
-│   │   ├── services/           # Business logic
-│   │   │   ├── diagnosis-service.ts  # AI + rule-based diagnosis
-│   │   │   └── resolution-guides.ts  # Resolution instructions
-│   │   └── mock-data/          # Demo claim scenarios
-│   └── types/                  # TypeScript interfaces
-├── .env.example                # Environment variables template
-├── .env.local                  # Your local config (not committed)
-├── tailwind.config.ts          # Custom colors (indigo, green, red, amber)
-├── package.json
-└── README.md                   # You are here
+│   │   ├── adapters/
+│   │   │   └── epfo-adapter.ts # Mock EPFO API (swap for production)
+│   │   ├── services/
+│   │   │   ├── diagnosis-service.ts
+│   │   │   ├── resolution-guides.ts
+│   │   │   ├── email-generator.ts
+│   │   │   ├── kyc-validator.ts
+│   │   │   ├── legal-document-generator.ts
+│   │   │   └── rights-engine.ts
+│   │   └── mock-data/claims.ts # 4 demo scenarios
+│   └── types/                  # claim.ts, diagnosis.ts
+├── ARCHITECTURE.md             # System design & data flows
+├── DEMO_SCRIPT.md              # 2–3 min judge presentation script
+├── .env.example
+├── tailwind.config.ts          # EPFO brand colors + animations
+└── README.md
 ```
 
 ---
@@ -291,16 +330,18 @@ This allows:
 
 ## 🎨 Design System
 
-**Brand Colors (Tailwind CSS):**
-- **Primary** (Indigo `#4F46E5`) — Main brand, CTAs
-- **Secondary** (Green `#10B981`) — Success states
-- **Danger** (Red `#EF4444`) — Blockers, errors
-- **Warning** (Amber `#F59E0B`) — Alerts
+**EPFO-Inspired Government Theme:**
+- **Navy** (`#1a237e`) — Headings, primary CTAs, navbar accents
+- **Purple** (`#7c3aed`) — Hero highlights, accent text
+- **Lavender gradient** — Hero background (light left → dark right)
+- **Government identity bar** — Indian flag, "भारत सरकार | Government of India"
+- **GovPageShell** — Shared layout for inner pages (breadcrumbs, footer, scroll-to-top)
 
 **Components (shadcn/ui):**
-- Button, Card, Badge, Dialog, Toast, Spinner
+- Button, Card, Badge, Dialog, Toast, Spinner, Skeleton
+- Custom utilities: `gov-card`, `btn-press`, `fade-in-section`, `stagger-children`
 - Fully accessible (ARIA labels, keyboard navigation)
-- Responsive (mobile-first, tested on 320px–1920px)
+- Responsive (mobile-first, 320px–1920px)
 
 ---
 
@@ -308,11 +349,11 @@ This allows:
 
 | Layer | Technology |
 |-------|------------|
-| **Framework** | Next.js 14 (App Router, Turbopack, React Server Components) |
+| **Framework** | Next.js 16 (App Router, Turbopack) |
 | **Language** | TypeScript (strict mode) |
-| **Styling** | Tailwind CSS + shadcn/ui |
-| **AI** | OpenAI GPT-3.5-Turbo |
-| **State** | React Context API (Language) |
+| **Styling** | Tailwind CSS + shadcn/ui + EPFO theme |
+| **AI** | OpenAI GPT-3.5-Turbo (server-side via API route) |
+| **State** | React Context API (Language) + localStorage (email tracking) |
 | **Routing** | Next.js App Router with dynamic routes |
 | **Date Handling** | date-fns |
 | **Icons** | Lucide React |
@@ -372,8 +413,9 @@ npm run lint      # Run ESLint
 ✅ Validated by real grievances on EPFO portal
 
 ### **2. Technical Implementation**
-✅ Next.js 14, TypeScript, OpenAI integration  
+✅ Next.js 16, TypeScript, OpenAI integration  
 ✅ Production-ready architecture (adapters, services, types)  
+✅ 11 integrated features across 9 routes  
 ✅ Demonstrable: 4 complete scenarios, runs locally in 2 minutes
 
 ### **3. India Stack Integration**
@@ -404,11 +446,31 @@ npm run lint      # Run ESLint
 
 ---
 
+## ✅ Submission Checklist
+
+| Item | Status |
+|------|--------|
+| Production build (`npm run build`) | ✅ Passes |
+| All 11 features implemented | ✅ Complete |
+| 4 demo UAN scenarios | ✅ Working |
+| Hindi/English i18n | ✅ Homepage + inner pages |
+| EPFO-inspired UI + government branding | ✅ Complete |
+| API routes (`/api/claim/status`, `/api/claim/diagnose`) | ✅ Working |
+| README.md | ✅ Updated |
+| ARCHITECTURE.md | ✅ Updated |
+| DEMO_SCRIPT.md | ✅ Updated |
+| `.env.example` | ✅ Included |
+
+**Demo UANs:** `123456789` (blocked) · `987654321` (KYC) · `555555555` (processing) · `111111111` (settled)
+
+**Judge entry point:** [http://localhost:3000/demo](http://localhost:3000/demo)
+
+---
+
 ## 📧 Contact
 
-**Team:** [Your Name/Team Name]  
-**Email:** your.email@example.com  
-**Demo:** [Deployed URL if available]
+**Repository:** [github.com/Yogesh-101/SahayakAI](https://github.com/Yogesh-101/SahayakAI)  
+**Demo:** Run locally — `npm install --legacy-peer-deps && npm run dev`
 
 ---
 
