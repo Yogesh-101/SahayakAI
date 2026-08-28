@@ -175,8 +175,9 @@ src/
 ```
 1. User enters UAN on /claim/check
 2. Client calls epfo-adapter.fetchClaimStatus(uan)
-3. Adapter returns mock ClaimStatus (~500ms simulated latency)
-4. Router navigates to /claim/{uan}
+3. Adapter calls GET /api/claim/status?uan=...
+4. API route returns mock ClaimStatus (~300ms simulated latency)
+5. Router navigates to /claim/{uan}
 5. GovPageShell wraps the page with gov header + breadcrumbs
 6. Page renders 6 sections:
    a. Claim Overview (summary card)

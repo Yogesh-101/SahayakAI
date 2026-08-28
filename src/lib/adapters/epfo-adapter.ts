@@ -1,20 +1,11 @@
 import type { ClaimStatus } from '@/types/claim';
-import { getClaimByUAN } from '@/lib/mock-data/claims';
 
 /**
- * ⚠️ MOCK IMPLEMENTATION
+ * EPFO claim status adapter.
  *
- * In production this would call the real EPFO Unified Member Portal API at
- * https://unifiedportal-mem.epfindia.gov.in/memberInterface/api/
- *
- * The adapter pattern lets us swap this mock with a real HTTP client
- * without changing any business logic or UI code.
+ * Demo: calls `/api/claim/status` (mock data + simulated latency).
+ * Production: swap this client to the real EPFO Unified Member Portal API.
  */
-
-/** Simulate network latency so the UI loading states can be tested. */
-function simulateLatency(ms = 500): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 /**
  * Fetch the current status of an EPFO claim.
@@ -30,19 +21,27 @@ export async function fetchClaimStatus(
 ): Promise<ClaimStatus> {
   console.log(`[MOCK EPFO API] Fetching claim for UAN: ${uan}`);
 
-  await simulateLatency(500);
+  const response = await fetch(
+    `/api/claim/status?uan=${encodeURIComponent(uan)}`,
+    { cache: 'no-store' },
+  );
 
-  const claim = getClaimByUAN(uan);
+  const payload = (await response.json()) as { claim?: ClaimStatus; error?: string };
 
-  if (!claim) {
+  if (!response.ok) {
     throw new Error(
-      `Claim not found for UAN ${uan}. Try one of the demo UANs: 123456789, 987654321, 555555555, 111111111`,
+      payload.error ??
+        `Claim not found for UAN ${uan}. Try one of the demo UANs: 123456789, 987654321, 555555555, 111111111`,
     );
   }
 
+  if (!payload.claim) {
+    throw new Error(`Claim not found for UAN ${uan}.`);
+  }
+
   console.log(
-    `[MOCK EPFO API] Found claim ${claim.claimId} — stage: ${claim.currentStage}`,
+    `[MOCK EPFO API] Found claim ${payload.claim.claimId} — stage: ${payload.claim.currentStage}`,
   );
 
-  return claim;
+  return payload.claim;
 }

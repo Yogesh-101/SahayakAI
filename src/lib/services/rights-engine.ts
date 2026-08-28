@@ -1,4 +1,4 @@
-import type { ClaimStatus, ClaimStages } from '@/types/claim';
+import type { ClaimStatus } from '@/types/claim';
 import { differenceInDays } from 'date-fns';
 
 export interface CitizenRight {

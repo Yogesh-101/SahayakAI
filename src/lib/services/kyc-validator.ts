@@ -1,5 +1,3 @@
-import type { ClaimStatus } from '@/types/claim';
-
 export interface KYCField {
   field: string;
   source1: { name: string; value: string };

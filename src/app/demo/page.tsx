@@ -71,6 +71,30 @@ const DEMO_STEPS = [
     action: 'Toggle Language',
     note: 'Use the language toggle in the header to switch to Hindi',
   },
+  {
+    id: 7,
+    title: 'Citizen Empowerment Tools',
+    description:
+      'Peer comparison, financial impact calculator, smart employer email, and know-your-rights panel — all on the claim dashboard for blocked claims.',
+    action: 'View Empowerment Tools',
+    link: '/claim/123456789',
+  },
+  {
+    id: 8,
+    title: 'Pre-Filing KYC Health Checker',
+    description:
+      'Cross-check Name, DOB, PAN, and Aadhaar before filing. Traffic-light scoring prevents 30% of claim delays caused by KYC mismatches.',
+    action: 'Check KYC Health',
+    link: '/tools/kyc-check',
+  },
+  {
+    id: 9,
+    title: 'One-Click Legal Escalation',
+    description:
+      'Auto-generate EPFiGMS grievances, RTI applications, and CPGRAMS complaints with proper legal references — ready to copy and submit.',
+    action: 'Generate Legal Documents',
+    link: '/tools/escalate',
+  },
 ];
 
 export default function DemoPage() {
@@ -218,7 +242,7 @@ export default function DemoPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-5 h-5 rounded-full bg-epfo-indigo text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
-                <span><strong>Technical Depth:</strong> AI diagnosis, India Stack (WhatsApp, BHASHINI), Next.js 14</span>
+                <span><strong>Technical Depth:</strong> AI diagnosis, 6 empowerment tools, India Stack (WhatsApp, BHASHINI), Next.js 16</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-5 h-5 rounded-full bg-epfo-indigo text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>

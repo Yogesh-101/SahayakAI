@@ -69,10 +69,10 @@ export default function Home() {
   const TOOLS = [
     { icon: ShieldCheck, title: t('tool_kyc_title'), description: t('tool_kyc_desc'), href: '/tools/kyc-check', color: 'text-green-600', bgColor: 'bg-green-50', borderColor: 'border-green-200' },
     { icon: Scale, title: t('tool_legal_title'), description: t('tool_legal_desc'), href: '/tools/escalate', color: 'text-red-600', bgColor: 'bg-red-50', borderColor: 'border-red-200' },
-    { icon: IndianRupee, title: t('tool_finance_title'), description: t('tool_finance_desc'), href: '/claim/check', color: 'text-amber-600', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
-    { icon: BarChart3, title: t('tool_peer_title'), description: t('tool_peer_desc'), href: '/claim/check', color: 'text-blue-600', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
-    { icon: Mail, title: t('tool_email_title'), description: t('tool_email_desc'), href: '/claim/check', color: 'text-purple-600', bgColor: 'bg-purple-50', borderColor: 'border-purple-200' },
-    { icon: BookOpen, title: t('tool_rights_title'), description: t('tool_rights_desc'), href: '/claim/check', color: 'text-indigo-600', bgColor: 'bg-indigo-50', borderColor: 'border-indigo-200' },
+    { icon: IndianRupee, title: t('tool_finance_title'), description: t('tool_finance_desc'), href: '/claim/123456789', color: 'text-amber-600', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
+    { icon: BarChart3, title: t('tool_peer_title'), description: t('tool_peer_desc'), href: '/claim/123456789', color: 'text-blue-600', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
+    { icon: Mail, title: t('tool_email_title'), description: t('tool_email_desc'), href: '/claim/123456789', color: 'text-purple-600', bgColor: 'bg-purple-50', borderColor: 'border-purple-200' },
+    { icon: BookOpen, title: t('tool_rights_title'), description: t('tool_rights_desc'), href: '/claim/123456789', color: 'text-indigo-600', bgColor: 'bg-indigo-50', borderColor: 'border-indigo-200' },
   ];
 
   const STATS = [

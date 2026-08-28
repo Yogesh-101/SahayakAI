@@ -87,7 +87,7 @@ Real-time alerts via WhatsApp Business API:
 - Makes the delay tangible in rupees for citizens and escalation letters
 
 ### 9️⃣ **Intelligent Email Generator** *(NEW)*
-- AI-generated employer emails with EPFO circular references
+- Template-generated employer emails with EPFO circular references
 - Legal deadlines and compliance mandates included
 - Follow-up tracking with escalation after 3/7 days
 - One-click copy to clipboard
