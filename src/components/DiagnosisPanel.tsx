@@ -22,6 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { ClaimStatus } from '@/types/claim';
 import type { Diagnosis } from '@/types/diagnosis';
 import { getResolutionGuide } from '@/lib/services/resolution-guides';
@@ -31,6 +32,7 @@ interface DiagnosisPanelProps {
 }
 
 export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
+  const { t } = useLanguage();
   const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
   const [aiSource, setAiSource] = useState<'openai' | 'rules'>('rules');
   const [loading, setLoading] = useState(true);
@@ -153,9 +155,13 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
                 </CardTitle>
                 <Badge
                   variant="outline"
-                  className="text-[10px] h-5"
+                  className={`text-[10px] h-5 ${
+                    aiSource === 'openai'
+                      ? 'border-green-300 bg-green-50 text-green-800'
+                      : 'border-amber-300 bg-amber-50 text-amber-800'
+                  }`}
                 >
-                  {aiSource === 'openai' ? 'GPT-3.5' : 'Rule Engine'}
+                  {aiSource === 'openai' ? t('diagnosis_gpt_powered') : t('diagnosis_rule_based')}
                 </Badge>
               </div>
               <CardDescription

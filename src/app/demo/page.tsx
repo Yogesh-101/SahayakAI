@@ -29,7 +29,7 @@ const DEMO_STEPS = [
     id: 2,
     title: 'Try SahayakAI: Check Claim Status',
     description:
-      'Enter a UAN to see real-time claim tracking with granular stage-by-stage visibility. Try voice input in Hindi or English (BHASHINI integration).',
+      'Enter a UAN to see real-time claim tracking with granular stage-by-stage visibility. Try mock voice input in Hindi or English.',
     action: 'Check Demo Claims',
     link: '/claim/check',
     demoUANs: [
@@ -57,17 +57,17 @@ const DEMO_STEPS = [
   },
   {
     id: 5,
-    title: 'WhatsApp Notifications (India Stack)',
+    title: 'WhatsApp Notifications (Mock Preview)',
     description:
-      'Real-time WhatsApp alerts at every stage change, blocker detection, and settlement — so citizens never need to check the portal.',
+      'Preview how WhatsApp alerts would look at each stage change, blocker detection, and settlement — not sent to a real phone.',
     action: 'View Notifications',
     link: '/claim/111111111',
   },
   {
     id: 6,
-    title: 'Multilingual Support (22 Languages)',
+    title: 'Multilingual Support (Hindi + English)',
     description:
-      'Hindi UI translations and voice input via BHASHINI ensure accessibility for all citizens, regardless of digital literacy.',
+      'Hindi UI translations and mock BHASHINI voice input. Additional languages planned for production.',
     action: 'Toggle Language',
     note: 'Use the language toggle in the header to switch to Hindi',
   },

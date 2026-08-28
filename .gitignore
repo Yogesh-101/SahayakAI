@@ -31,6 +31,9 @@ yarn-error.log*
 .env.production.local
 .env
 
+# Personal video script (not for repo)
+DEMO_SCRIPT.md
+
 # Vercel
 .vercel
 

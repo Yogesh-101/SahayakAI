@@ -49,22 +49,7 @@ export default function GovPageShell({
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50/50">
-      {/* ── Government Identity Bar (slim) ────────────── */}
-      <div className="bg-[#1a1a2e] text-white py-1">
-        <div className="container mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image src="/india-flag.svg" alt="Indian Flag" width={18} height={18} className="rounded-full" />
-            <span className="text-[11px] tracking-wide">
-              <span className="font-medium">भारत सरकार</span>
-              <span className="text-white/40 mx-1">|</span>
-              <span className="font-medium">Government of India</span>
-            </span>
-          </div>
-          <LanguageToggle variant="dark" />
-        </div>
-      </div>
-
+    <div className="min-h-screen flex flex-col bg-gray-50/50" suppressHydrationWarning>
       {/* ── Main Header ──────────────────────────────── */}
       <header className="bg-white border-b sticky top-0 z-50">
         <div className="container mx-auto px-4">
@@ -87,20 +72,27 @@ export default function GovPageShell({
                 </Link>
               ))}
             </div>
-            <Link href="/claim/check" className="shrink-0">
-              <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-8 px-4 text-xs">
-                {t('cta_check_status')}
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3 shrink-0">
+              <LanguageToggle />
+              <Link href="/claim/check">
+                <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-8 px-4 text-xs">
+                  {t('cta_check_status')}
+                </Button>
+              </Link>
+            </div>
           </nav>
         </div>
       </header>
 
       {/* ── Breadcrumb Bar ────────────────────────────── */}
       {breadcrumbs.length > 0 && (
-        <div className="bg-white border-b">
-          <div className="container mx-auto px-4 py-2">
-            <nav className="flex items-center gap-1 text-xs text-muted-foreground" aria-label="Breadcrumb">
+        <div className="bg-white border-b" suppressHydrationWarning>
+          <div className="container mx-auto px-4 py-2" suppressHydrationWarning>
+            <nav
+              className="flex items-center gap-1 text-xs text-muted-foreground"
+              aria-label="Breadcrumb"
+              suppressHydrationWarning
+            >
               <Link href="/" className="flex items-center gap-1 hover:text-epfo-indigo transition-colors">
                 <Home className="w-3 h-3" />
                 <span>{t('app_name')}</span>
@@ -129,7 +121,7 @@ export default function GovPageShell({
         </div>
       )}
 
-      <main className="flex-1">{children}</main>
+      <main className="flex-1" suppressHydrationWarning>{children}</main>
 
       {/* ── Footer ───────────────────────────────────── */}
       <footer className="bg-[#1a237e] text-white mt-auto">

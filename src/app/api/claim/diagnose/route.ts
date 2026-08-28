@@ -6,8 +6,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const claim = parseClaimStatus(body.claim as Record<string, unknown>);
-    const diagnosis = await diagnoseClaimBottleneck(claim);
-    return NextResponse.json({ diagnosis, source: getSource() });
+    const { diagnosis, source } = await diagnoseClaimBottleneck(claim);
+    return NextResponse.json({ diagnosis, source });
   } catch (error) {
     console.error('[API /claim/diagnose] Error:', error);
     return NextResponse.json(
@@ -15,9 +15,4 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-}
-
-function getSource(): 'openai' | 'rules' {
-  const key = process.env.OPENAI_API_KEY;
-  return key && key !== 'sk-proj-your-actual-key-here' ? 'openai' : 'rules';
 }

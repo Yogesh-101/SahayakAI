@@ -7,9 +7,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SahayakAI - AI-Powered EPFO Claims Tracker",
+  title: "SahayakAI - Hackathon EPFO Claims Prototype",
   description:
-    "Track your EPFO PF withdrawal, loan, and pension claims in real time. AI-powered bottleneck diagnosis, resolution guidance, and WhatsApp notifications.",
+    "Hackathon prototype for Build What Moves India. Mock EPFO claim tracking with AI diagnosis — not affiliated with EPFO or Government of India.",
   keywords: [
     "EPFO",
     "PF claim",
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
     apple: "/logo.svg",
   },
   openGraph: {
-    title: "SahayakAI - Track Your EPFO Claim",
+    title: "SahayakAI - Hackathon EPFO Claims Prototype",
     description:
-      "Stop checking 'Under Process'. Get real-time bottleneck diagnosis and resolution steps.",
+      "Hackathon prototype with mock data. Not an official government product.",
     type: "website",
     locale: "en_IN",
   },

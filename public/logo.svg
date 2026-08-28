@@ -1,27 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <!-- Outer circle - EPFO blue -->
   <circle cx="100" cy="100" r="95" fill="#3B3F8C" stroke="#2E3270" stroke-width="3"/>
-  <!-- Inner circle - lighter -->
   <circle cx="100" cy="100" r="80" fill="#4B4FBD" stroke="#6d6ff3" stroke-width="1.5"/>
-  <!-- Ashoka wheel inspired lines (simplified) -->
-  <circle cx="100" cy="100" r="65" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
-  <!-- Shield shape representing protection -->
   <path d="M100 40 L140 60 L140 110 Q140 140 100 160 Q60 140 60 110 L60 60 Z" fill="#ffffff" fill-opacity="0.15" stroke="#ffffff" stroke-width="2"/>
-  <!-- AI Brain icon in center -->
   <path d="M85 85 Q85 75 95 75 L105 75 Q115 75 115 85 L115 95 Q115 105 105 105 L95 105 Q85 105 85 95 Z" fill="#ffffff" fill-opacity="0.9"/>
-  <!-- Circuit lines representing AI -->
   <line x1="100" y1="68" x2="100" y2="75" stroke="#ffffff" stroke-width="2"/>
   <line x1="100" y1="105" x2="100" y2="112" stroke="#ffffff" stroke-width="2"/>
   <line x1="78" y1="90" x2="85" y2="90" stroke="#ffffff" stroke-width="2"/>
   <line x1="115" y1="90" x2="122" y2="90" stroke="#ffffff" stroke-width="2"/>
-  <!-- Small dots at circuit ends -->
   <circle cx="100" cy="65" r="3" fill="#ffffff"/>
   <circle cx="100" cy="115" r="3" fill="#ffffff"/>
   <circle cx="75" cy="90" r="3" fill="#ffffff"/>
   <circle cx="125" cy="90" r="3" fill="#ffffff"/>
-  <!-- Text "S" for Sahayak -->
   <text x="100" y="98" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#3B3F8C" text-anchor="middle" dominant-baseline="middle">S</text>
-  <!-- Bottom text -->
   <text x="100" y="140" font-family="Arial, sans-serif" font-size="11" fill="#ffffff" text-anchor="middle" font-weight="bold">SAHAYAK AI</text>
-  <text x="100" y="153" font-family="Arial, sans-serif" font-size="8" fill="#ffffff" text-anchor="middle" opacity="0.8">EPFO Claims Assistant</text>
+  <text x="100" y="153" font-family="Arial, sans-serif" font-size="8" fill="#ffffff" text-anchor="middle" opacity="0.8">Hackathon Prototype</text>
 </svg>

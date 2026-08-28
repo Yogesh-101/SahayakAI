@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { NotificationEvent } from '@/types/diagnosis';
 import type { ClaimStatus } from '@/types/claim';
 
@@ -20,6 +21,7 @@ interface WhatsAppPreviewProps {
 }
 
 export default function WhatsAppPreview({ claim }: WhatsAppPreviewProps) {
+  const { t } = useLanguage();
   const [expanded, setExpanded] = useState(false);
 
   // Generate mock notification history based on claim status
@@ -31,13 +33,11 @@ export default function WhatsAppPreview({ claim }: WhatsAppPreviewProps) {
         <div className="flex items-start gap-3">
           <MessageCircle className="w-6 h-6 text-secondary-600 shrink-0" />
           <div className="flex-1">
-            <CardTitle className="text-lg">WhatsApp Notifications</CardTitle>
-            <CardDescription>
-              Real-time alerts sent directly to your phone (India Stack integration)
-            </CardDescription>
+            <CardTitle className="text-lg">{t('whatsapp_title')}</CardTitle>
+            <CardDescription>{t('whatsapp_subtitle')}</CardDescription>
           </div>
-          <Badge variant="outline" className="text-xs bg-secondary-50">
-            🇮🇳 DEMO
+          <Badge variant="outline" className="text-xs bg-amber-50 text-amber-800 border-amber-300">
+            {t('whatsapp_demo_badge')}
           </Badge>
         </div>
       </CardHeader>
@@ -67,13 +67,8 @@ export default function WhatsAppPreview({ claim }: WhatsAppPreviewProps) {
 
         {/* Integration note */}
         <div className="mt-4 text-xs text-muted-foreground space-y-1">
-          <p>
-            <strong>Production Integration:</strong> Uses India Stack's WhatsApp
-            Business API for real-time notifications.
-          </p>
-          <p>
-            Citizens receive updates at every stage without checking the portal.
-          </p>
+          <p>{t('whatsapp_integration_note')}</p>
+          <p>{t('whatsapp_benefit')}</p>
         </div>
       </CardContent>
     </Card>

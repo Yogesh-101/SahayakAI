@@ -75,13 +75,13 @@ export default function VoiceInput({
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
-              Voice Input
-              <Badge variant="outline" className="text-xs">
-                🇮🇳 BHASHINI Demo
+              Voice Input (Mock Preview)
+              <Badge variant="outline" className="text-xs bg-amber-50 text-amber-800 border-amber-300">
+                Mock Preview
               </Badge>
             </DialogTitle>
             <DialogDescription>
-              Speak your UAN number in English or Hindi
+              Simulated BHASHINI voice input — Hindi or English demo only
             </DialogDescription>
           </DialogHeader>
 
@@ -117,9 +117,9 @@ export default function VoiceInput({
 
           <div className="text-xs text-muted-foreground space-y-1 border-t pt-4">
             <p>
-              <strong>Production Integration:</strong> Uses BHASHINI (India's National Language Translation Mission) for multilingual speech recognition.
+              <strong>Mock preview only.</strong> In production this would use BHASHINI for speech recognition.
             </p>
-            <p>Supports 22 Indian languages including Hindi, Tamil, Bengali, Telugu, Marathi, and more.</p>
+            <p>Today: Hindi and English UI. Additional languages planned via BHASHINI.</p>
           </div>
 
           <Button

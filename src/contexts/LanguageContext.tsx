@@ -124,28 +124,32 @@ const translations: Record<Language, Record<string, string>> = {
     running_diagnosis: 'Running AI diagnosis...',
 
     // WhatsApp
-    whatsapp_title: 'WhatsApp Notifications',
+    whatsapp_title: 'WhatsApp Notifications (Mock Preview)',
     whatsapp_subtitle:
-      'Real-time alerts sent directly to your phone (India Stack integration)',
-    whatsapp_demo_badge: 'DEMO',
+      'Simulated alerts — not sent to a real phone',
+    whatsapp_demo_badge: 'MOCK PREVIEW',
     whatsapp_integration_note:
-      'Production Integration: Uses India Stack\'s WhatsApp Business API for real-time notifications.',
+      'Mock preview only. In production this would use India Stack\'s WhatsApp Business API.',
     whatsapp_benefit:
-      'Citizens receive updates at every stage without checking the portal.',
+      'Shows how citizens could receive updates without checking the portal.',
 
     // Error Messages
     error_claim_not_found: 'Claim Not Found',
     error_try_another_uan: 'Try Another UAN',
     error_diagnosis_failed: 'Could not run diagnosis',
     error_try_again: 'Please try again later',
-
-    // Homepage v2
-    topbar_gov: 'Government of India',
-    topbar_ministry: 'Ministry of Labour & Employment',
-    header_tagline: 'AI-Powered EPFO Claims Assistant',
+    diagnosis_rule_based: 'Rule-based demo mode',
+    diagnosis_gpt_powered: 'GPT-3.5 powered',
+    prototype_banner:
+      'Hackathon prototype for Build What Moves India — not affiliated with EPFO or Government of India. Mock data only.',
+    ticker_label: 'DEMO',
+    ticker_text:
+      'Prototype update: Mock claim tracking with AI diagnosis · KYC Health Check uses sample profiles only · Legal templates link to official portals',
+    header_tagline: 'Hackathon EPFO Claims Assistant (Prototype)',
     nav_kyc_check: 'KYC Check',
     nav_escalate: 'Escalate',
     hero_badge: 'Built for Build What Moves India 2026',
+    hero_welcome: 'WELCOME TO SAHAYAKAI',
     hero_title_line1: 'Your EPFO Claim.',
     hero_title_line2: 'Complete Transparency.',
     hero_description:
@@ -155,7 +159,8 @@ const translations: Record<Language, Record<string, string>> = {
     stat_epfo_members: 'EPFO Members',
     stat_target_settlement: 'Target Settlement',
     stat_diagnosis_accuracy: 'Diagnosis Accuracy',
-    stat_languages: 'Languages',
+    stat_languages: 'Hindi + English (22 planned)',
+    mock_preview_badge: 'Mock Preview',
     features_title: 'How SahayakAI Works',
     features_subtitle:
       'Four core capabilities transforming EPFO claim tracking from opaque to transparent.',
@@ -168,9 +173,9 @@ const translations: Record<Language, Record<string, string>> = {
     feature_resolution_title: 'Resolution Guidance',
     feature_resolution_desc:
       'Step-by-step instructions to fix blockers — contact HR, update KYC, or escalate to EPFO.',
-    feature_whatsapp_title: 'WhatsApp Alerts',
+    feature_whatsapp_title: 'WhatsApp Alerts (Mock Preview)',
     feature_whatsapp_desc:
-      'Get notified on WhatsApp when your claim moves, gets blocked, or is settled.',
+      'Preview how stage-change alerts would look on WhatsApp — not sent to a real phone.',
     problem_title: 'The Problem We Solve',
     problem_subtitle: 'See the difference SahayakAI makes for 8 crore+ EPFO members',
     problem_before_title: 'EPFO Portal (Current)',
@@ -208,14 +213,14 @@ const translations: Record<Language, Record<string, string>> = {
     tool_email_desc: 'AI-generated employer emails with legal references and follow-up tracking.',
     tool_rights_title: 'Know Your Rights',
     tool_rights_desc: 'Context-aware legal rights based on your claim stage, with portal links.',
-    indiastack_title: 'Built on India Stack',
-    indiastack_subtitle: "Native integration with India's digital public infrastructure.",
+    indiastack_title: 'Planned India Stack Integrations',
+    indiastack_subtitle: 'Mock previews of how SahayakAI could connect to India\'s digital public infrastructure.',
     indiastack_whatsapp_title: 'WhatsApp Business API',
-    indiastack_whatsapp_desc: 'Real-time claim notifications',
-    indiastack_bhashini_title: 'BHASHINI',
-    indiastack_bhashini_desc: 'Voice input in 22 languages',
+    indiastack_whatsapp_desc: 'Mock preview of claim notifications',
+    indiastack_bhashini_title: 'BHASHINI Voice Input',
+    indiastack_bhashini_desc: 'Mock voice input — Hindi & English today',
     indiastack_digilocker_title: 'DigiLocker',
-    indiastack_digilocker_desc: 'Verified KYC documents',
+    indiastack_digilocker_desc: 'Planned KYC document verification',
     cta2_title: 'Ready to track your EPFO claim?',
     cta2_subtitle: 'Enter your UAN and get instant AI-powered diagnosis. No sign-up required.',
     cta2_check_status: 'Check Claim Status',
@@ -303,28 +308,34 @@ const translations: Record<Language, Record<string, string>> = {
     running_diagnosis: 'AI निदान चल रहा है...',
 
     // WhatsApp
-    whatsapp_title: 'WhatsApp सूचनाएं',
+    whatsapp_title: 'WhatsApp सूचनाएं (मॉक पूर्वावलोकन)',
     whatsapp_subtitle:
-      'सीधे आपके फोन पर रियल-टाइम अलर्ट (India Stack एकीकरण)',
-    whatsapp_demo_badge: 'डेमो',
+      'सिम्युलेटेड अलर्ट — वास्तविक फोन पर नहीं भेजे जाते',
+    whatsapp_demo_badge: 'मॉक पूर्वावलोकन',
     whatsapp_integration_note:
-      'उत्पादन एकीकरण: रियल-टाइम सूचनाओं के लिए India Stack के WhatsApp Business API का उपयोग करता है।',
+      'केवल मॉक पूर्वावलोकन। उत्पादन में India Stack के WhatsApp Business API का उपयोग होगा।',
     whatsapp_benefit:
-      'नागरिकों को पोर्टल की जांच किए बिना हर चरण पर अपडेट मिलता है।',
+      'दिखाता है कि नागरिक पोर्टल जांचे बिना अपडेट कैसे प्राप्त कर सकते हैं।',
 
     // Error Messages
     error_claim_not_found: 'दावा नहीं मिला',
     error_try_another_uan: 'दूसरा UAN आजमाएं',
     error_diagnosis_failed: 'निदान नहीं चल सका',
     error_try_again: 'कृपया बाद में पुनः प्रयास करें',
+    diagnosis_rule_based: 'नियम-आधारित डेमो मोड',
+    diagnosis_gpt_powered: 'GPT-3.5 संचालित',
 
     // Homepage v2
-    topbar_gov: 'भारत सरकार',
-    topbar_ministry: 'श्रम एवं रोजगार मंत्रालय',
-    header_tagline: 'AI-संचालित EPFO दावा सहायक',
+    prototype_banner:
+      'बिल्ड व्हाट मूव्स इंडिया हैकाथॉन प्रोटोटाइप — EPFO या भारत सरकार से संबद्ध नहीं। केवल डेमो डेटा।',
+    ticker_label: 'डेमो',
+    ticker_text:
+      'प्रोटोटाइप अपडेट: मॉक दावा ट्रैकिंग और AI निदान · KYC जांच केवल नमूना प्रोफाइल · कानूनी टेम्पलेट आधिकारिक पोर्टल से लिंक',
+    header_tagline: 'हैकाथॉन EPFO दावा सहायक (प्रोटोटाइप)',
     nav_kyc_check: 'KYC जांच',
     nav_escalate: 'शिकायत करें',
     hero_badge: 'Build What Moves India 2026 के लिए निर्मित',
+    hero_welcome: 'सहायकAI में आपका स्वागत है',
     hero_title_line1: 'आपका EPFO दावा।',
     hero_title_line2: 'पूर्ण पारदर्शिता।',
     hero_description:
@@ -334,7 +345,8 @@ const translations: Record<Language, Record<string, string>> = {
     stat_epfo_members: 'EPFO सदस्य',
     stat_target_settlement: 'लक्षित निपटान',
     stat_diagnosis_accuracy: 'निदान सटीकता',
-    stat_languages: 'भाषाएं',
+    stat_languages: 'हिंदी + अंग्रेज़ी (22 नियोजित)',
+    mock_preview_badge: 'मॉक पूर्वावलोकन',
     features_title: 'सहायकAI कैसे काम करता है',
     features_subtitle:
       'EPFO दावा ट्रैकिंग को अपारदर्शी से पारदर्शी में बदलने वाली चार मुख्य क्षमताएं।',
@@ -347,9 +359,9 @@ const translations: Record<Language, Record<string, string>> = {
     feature_resolution_title: 'समाधान मार्गदर्शन',
     feature_resolution_desc:
       'बाधाओं को ठीक करने के लिए चरण-दर-चरण निर्देश — HR से संपर्क करें, KYC अपडेट करें, या EPFO को एस्केलेट करें।',
-    feature_whatsapp_title: 'WhatsApp अलर्ट',
+    feature_whatsapp_title: 'WhatsApp अलर्ट (मॉक पूर्वावलोकन)',
     feature_whatsapp_desc:
-      'जब आपका दावा आगे बढ़े, अवरुद्ध हो, या निपटाया जाए तो WhatsApp पर सूचना पाएं।',
+      'देखें कि WhatsApp पर चरण-परिवर्तन अलर्ट कैसे दिखेंगे — वास्तविक फोन पर नहीं भेजे जाते।',
     problem_title: 'हम जिस समस्या का समाधान करते हैं',
     problem_subtitle: '8 करोड़+ EPFO सदस्यों के लिए सहायकAI द्वारा किए गए अंतर को देखें',
     problem_before_title: 'EPFO पोर्टल (वर्तमान)',
@@ -388,14 +400,14 @@ const translations: Record<Language, Record<string, string>> = {
     tool_rights_title: 'अपने अधिकार जानें',
     tool_rights_desc:
       'पोर्टल लिंक के साथ आपके दावे के चरण के आधार पर संदर्भ-जागरूक कानूनी अधिकार।',
-    indiastack_title: 'India Stack पर निर्मित',
-    indiastack_subtitle: 'भारत के डिजिटल सार्वजनिक बुनियादी ढांचे के साथ मूल एकीकरण।',
+    indiastack_title: 'नियोजित India Stack एकीकरण',
+    indiastack_subtitle: 'सहायकAI भारत के डिजिटल बुनियादी ढांचे से कैसे जुड़ सकता है — मॉक पूर्वावलोकन।',
     indiastack_whatsapp_title: 'WhatsApp Business API',
-    indiastack_whatsapp_desc: 'रियल-टाइम दावा सूचनाएं',
-    indiastack_bhashini_title: 'भाषिणी',
-    indiastack_bhashini_desc: '22 भाषाओं में वॉइस इनपुट',
+    indiastack_whatsapp_desc: 'दावा सूचनाओं का मॉक पूर्वावलोकन',
+    indiastack_bhashini_title: 'भाषिणी वॉइस इनपुट',
+    indiastack_bhashini_desc: 'मॉक वॉइस इनपुट — आज हिंदी और अंग्रेज़ी',
     indiastack_digilocker_title: 'डिजिलॉकर',
-    indiastack_digilocker_desc: 'सत्यापित KYC दस्तावेज़',
+    indiastack_digilocker_desc: 'नियोजित KYC दस्तावेज़ सत्यापन',
     cta2_title: 'अपना EPFO दावा ट्रैक करने के लिए तैयार हैं?',
     cta2_subtitle: 'अपना UAN दर्ज करें और तुरंत AI-संचालित निदान प्राप्त करें। साइन-अप की आवश्यकता नहीं।',
     cta2_check_status: 'दावा स्थिति जांचें',

@@ -79,26 +79,11 @@ export default function Home() {
     { value: '8Cr+', label: t('stat_epfo_members') },
     { value: '3 Days', label: t('stat_target_settlement') },
     { value: '92%', label: t('stat_diagnosis_accuracy') },
-    { value: '22', label: t('stat_languages') },
+    { value: 'EN+HI', label: t('stat_languages') },
   ];
 
   return (
     <div className="min-h-screen bg-white">
-      {/* ── Government Identity Bar (slim) ────────────── */}
-      <div className="bg-[#1a1a2e] text-white py-1">
-        <div className="container mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image src="/india-flag.svg" alt="Indian Flag" width={18} height={18} className="rounded-full" />
-            <span className="text-[11px] tracking-wide">
-              <span className="font-medium">भारत सरकार</span>
-              <span className="text-white/40 mx-1">|</span>
-              <span className="font-medium">Government of India</span>
-            </span>
-          </div>
-          <LanguageToggle variant="dark" />
-        </div>
-      </div>
-
       {/* ── Main Navigation Header ───────────────────── */}
       <header className="bg-white border-b sticky top-0 z-50">
         <div className="container mx-auto px-4">
@@ -121,11 +106,14 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            <Link href="/claim/check" className="shrink-0">
-              <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-8 px-4 text-xs">
-                {t('cta_check_status')}
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3 shrink-0">
+              <LanguageToggle />
+              <Link href="/claim/check">
+                <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-8 px-4 text-xs">
+                  {t('cta_check_status')}
+                </Button>
+              </Link>
+            </div>
           </nav>
         </div>
       </header>
@@ -133,60 +121,42 @@ export default function Home() {
       {/* ── News Ticker ──────────────────────────────── */}
       <div className="bg-gray-50 border-b overflow-hidden py-1.5">
         <div className="flex items-center container mx-auto px-4">
-          <span className="shrink-0 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded mr-3 pulse-live">
-            LIVE
+          <span className="shrink-0 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded mr-3">
+            {t('ticker_label')}
           </span>
           <div className="overflow-hidden flex-1">
             <p className="ticker-animate whitespace-nowrap text-xs text-gray-700">
-              EPFO Circular: Online claims now processed within 3 working days &nbsp;|&nbsp;
-              New: KYC Health Check tool - verify your documents before filing &nbsp;|&nbsp;
-              One-click legal escalation with EPFiGMS, RTI & CPGRAMS templates
+              {t('ticker_text')}
             </p>
           </div>
         </div>
       </div>
 
-      {/* ── Hero Section (EPFO-style: light-left, workers-right, zoomed) ── */}
-      <section className="relative overflow-hidden bg-[#f0eaf8] h-[420px] sm:h-[460px] lg:h-[480px]">
-        {/* Desktop gradient: light lavender → dark purple (seamless with image bg) */}
+      {/* ── Hero Section (centered) ─────────────────── */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#f0eaf8] via-[#ebe3f5] to-white py-14 sm:py-16 lg:py-20">
         <div
-          className="hidden lg:block absolute inset-0"
+          className="absolute inset-0 opacity-40 pointer-events-none"
           style={{
             background:
-              'linear-gradient(to right, #f0eaf8 0%, #e8ddf5 28%, #a888c4 40%, #4a2868 48%, #1a0c25 55%, #0f0818 100%)',
+              'radial-gradient(ellipse 80% 60% at 50% 0%, #c4b5fd 0%, transparent 70%)',
           }}
         />
 
-        {/* Worker image: fills right 6 5%, zoomed with object-cover, all 3 workers visible */}
-        <div
-          className="hidden lg:block absolute inset-y-0 right-0 w-[55%]"
-          style={{
-            maskImage:
-              'linear-gradient(to right, transparent 0%, black 16%)',
-            WebkitMaskImage:
-              'linear-gradient(to right, transparent 0%, black 16%)',
-          }}
-        >
-          <Image
-            src="/hero-workers.jpg"
-            alt="Indian workers — construction, professional, healthcare"
-            fill
-            sizes="55vw"
-            className="object-cover"
-            style={{ objectPosition: '100% bottom' }}
-            priority
-          />
-        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <Badge
+              variant="outline"
+              className="mb-4 border-[#7c3aed]/30 text-[#7c3aed] bg-white/80 animate-fade-up"
+            >
+              {t('hero_badge')}
+            </Badge>
 
-        {/* Text content (left side) */}
-        <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
-          <div className="max-w-xl py-10">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#7c3aed] mb-3 animate-fade-up">
-              WELCOME TO {t('app_name')}
+              {t('hero_welcome')}
             </p>
 
             <h1
-              className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight mb-5 leading-[1.15] text-[#1a237e] animate-fade-up"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-5 leading-[1.15] text-[#1a237e] animate-fade-up"
               style={{ animationDelay: '0.1s' }}
             >
               {t('hero_title_line1')}{' '}
@@ -194,14 +164,14 @@ export default function Home() {
             </h1>
 
             <p
-              className="text-sm sm:text-base text-gray-600 mb-6 max-w-lg leading-relaxed animate-fade-up"
+              className="text-sm sm:text-base text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-up"
               style={{ animationDelay: '0.2s' }}
             >
               {t('hero_description')}
             </p>
 
             <div
-              className="flex flex-col sm:flex-row gap-3 animate-fade-up"
+              className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-up"
               style={{ animationDelay: '0.3s' }}
             >
               <Link href="/claim/check">
@@ -225,20 +195,19 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Stats row */}
             <div
-              className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-2.5 animate-fade-up"
+              className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-2xl mx-auto animate-fade-up"
               style={{ animationDelay: '0.4s' }}
             >
               {STATS.map((stat) => (
                 <div
                   key={stat.label}
-                  className="bg-white/70 backdrop-blur-sm rounded-lg p-2.5 border border-[#1a237e]/10"
+                  className="bg-white/80 backdrop-blur-sm rounded-lg p-3 border border-[#1a237e]/10 text-center"
                 >
                   <div className="text-lg font-bold text-[#1a237e] count-animate">
                     {stat.value}
                   </div>
-                  <div className="text-[10px] text-gray-500 mt-0.5">{stat.label}</div>
+                  <div className="text-[10px] text-gray-500 mt-0.5 leading-snug">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -378,16 +347,21 @@ export default function Home() {
             </div>
             <div className="grid sm:grid-cols-3 gap-4 stagger-children">
               {[
-                { icon: MessageCircle, color: 'text-green-600', bg: 'bg-green-50', title: t('indiastack_whatsapp_title'), desc: t('indiastack_whatsapp_desc') },
-                { icon: Mic, color: 'text-epfo-indigo', bg: 'bg-indigo-50', title: t('indiastack_bhashini_title'), desc: t('indiastack_bhashini_desc') },
-                { icon: Shield, color: 'text-blue-600', bg: 'bg-blue-50', title: t('indiastack_digilocker_title'), desc: t('indiastack_digilocker_desc') },
+                { icon: MessageCircle, color: 'text-green-600', bg: 'bg-green-50', title: t('indiastack_whatsapp_title'), desc: t('indiastack_whatsapp_desc'), mock: true },
+                { icon: Mic, color: 'text-epfo-indigo', bg: 'bg-indigo-50', title: t('indiastack_bhashini_title'), desc: t('indiastack_bhashini_desc'), mock: true },
+                { icon: Shield, color: 'text-blue-600', bg: 'bg-blue-50', title: t('indiastack_digilocker_title'), desc: t('indiastack_digilocker_desc'), mock: true },
               ].map((item) => (
                 <div key={item.title} className="gov-card bg-white rounded-xl p-5 border border-gray-200 text-center">
                   <div className={`w-11 h-11 rounded-full ${item.bg} flex items-center justify-center mx-auto mb-3`}>
                     <item.icon className={`w-5 h-5 ${item.color}`} />
                   </div>
                   <h3 className="font-semibold text-sm mb-1 text-[#1a237e]">{item.title}</h3>
-                  <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  <p className="text-xs text-muted-foreground mb-2">{item.desc}</p>
+                  {item.mock && (
+                    <Badge variant="outline" className="text-[10px] text-amber-700 border-amber-300 bg-amber-50">
+                      {t('mock_preview_badge')}
+                    </Badge>
+                  )}
                 </div>
               ))}
             </div>

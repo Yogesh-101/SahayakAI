@@ -8,10 +8,20 @@ import type { ClaimStatus } from '@/types/claim';
  */
 
 // Initialize OpenAI client (will be undefined if no API key)
-const openai =
-  process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'sk-proj-your-actual-key-here'
-    ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-    : undefined;
+function getOpenAIClient(): OpenAI | undefined {
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  if (!apiKey || apiKey === 'sk-proj-your-actual-key-here' || apiKey.startsWith('sk-proj-...')) {
+    return undefined;
+  }
+  return new OpenAI({ apiKey });
+}
+
+export type DiagnosisSource = 'openai' | 'rules';
+
+export interface DiagnosisResult {
+  diagnosis: Diagnosis;
+  source: DiagnosisSource;
+}
 
 /**
  * Diagnose why a claim is delayed or blocked.
@@ -19,24 +29,26 @@ const openai =
  */
 export async function diagnoseClaimBottleneck(
   claim: ClaimStatus,
-): Promise<Diagnosis> {
-  // Use OpenAI if available, otherwise fall back to rule-based
+): Promise<DiagnosisResult> {
+  const openai = getOpenAIClient();
+
   if (openai) {
     try {
-      return await diagnoseWithOpenAI(claim);
+      const diagnosis = await diagnoseWithOpenAI(openai, claim);
+      return { diagnosis, source: 'openai' };
     } catch (error) {
       console.error('[Diagnosis Service] OpenAI failed, falling back to rules:', error);
-      return diagnoseWithRules(claim);
+      return { diagnosis: diagnoseWithRules(claim), source: 'rules' };
     }
   }
 
-  return diagnoseWithRules(claim);
+  return { diagnosis: diagnoseWithRules(claim), source: 'rules' };
 }
 
 /**
  * AI-powered diagnosis using OpenAI GPT-3.5-Turbo.
  */
-async function diagnoseWithOpenAI(claim: ClaimStatus): Promise<Diagnosis> {
+async function diagnoseWithOpenAI(openai: OpenAI, claim: ClaimStatus): Promise<Diagnosis> {
   const currentStageData = claim.stages[claim.currentStage];
   const stageStatus = currentStageData.status;
 
@@ -70,7 +82,7 @@ Respond ONLY with valid JSON in this format:
 }
 `;
 
-  const response = await openai!.chat.completions.create({
+  const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [
       {
