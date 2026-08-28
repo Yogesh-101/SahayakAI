@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Simplified Government of India emblem style circle -->
+  <circle cx="24" cy="24" r="22" fill="none" stroke="#D4AF37" stroke-width="2"/>
+  <circle cx="24" cy="24" r="18" fill="#3B3F8C"/>
+  <!-- Shield for EPFO protection theme -->
+  <path d="M24 10 L34 14 L34 26 Q34 34 24 38 Q14 34 14 26 L14 14 Z" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+  <!-- AI circuit node in center -->
+  <circle cx="24" cy="22" r="5" fill="#ffffff" fill-opacity="0.9"/>
+  <text x="24" y="25" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#3B3F8C" text-anchor="middle" dominant-baseline="middle">AI</text>
+  <!-- Dots representing connectivity -->
+  <circle cx="24" cy="14" r="1.5" fill="#ffffff"/>
+  <circle cx="24" cy="30" r="1.5" fill="#ffffff"/>
+  <circle cx="18" cy="22" r="1.5" fill="#ffffff"/>
+  <circle cx="30" cy="22" r="1.5" fill="#ffffff"/>
+  <!-- Lines -->
+  <line x1="24" y1="15.5" x2="24" y2="17" stroke="#ffffff" stroke-width="1"/>
+  <line x1="24" y1="27" x2="24" y2="28.5" stroke="#ffffff" stroke-width="1"/>
+  <line x1="19.5" y1="22" x2="19" y2="22" stroke="#ffffff" stroke-width="1"/>
+  <line x1="29" y1="22" x2="28.5" y2="22" stroke="#ffffff" stroke-width="1"/>
+</svg>

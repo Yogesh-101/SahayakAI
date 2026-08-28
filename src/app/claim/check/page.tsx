@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Search, ArrowLeft } from 'lucide-react';
+import { Search, ShieldCheck, ArrowRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
 import { useToast } from '@/components/ui/use-toast';
 import VoiceInput from '@/components/VoiceInput';
-import LanguageToggle from '@/components/LanguageToggle';
+import GovPageShell from '@/components/GovPageShell';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { fetchClaimStatus } from '@/lib/adapters/epfo-adapter';
 
@@ -46,69 +46,65 @@ export default function ClaimCheckPage() {
     }
   }
 
+  const DEMO_CLAIMS = [
+    { uan: '123456789', label: 'Employer block', status: 'blocked' },
+    { uan: '987654321', label: 'KYC mismatch', status: 'blocked' },
+    { uan: '555555555', label: 'Processing', status: 'active' },
+    { uan: '111111111', label: 'Settled', status: 'settled' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white">
-      <header className="container mx-auto px-4 py-6 flex items-center justify-between">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {t('back_to_home')}
-        </Link>
-        <LanguageToggle />
-      </header>
-
-      <main className="container mx-auto px-4 py-12">
+    <GovPageShell
+      breadcrumbs={[{ label: t('cta_check_status') }]}
+    >
+      <div className="container mx-auto px-4 py-10">
         <div className="max-w-lg mx-auto">
-          <Card>
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl sm:text-3xl">
-                {t('check_title')}
-              </CardTitle>
-              <CardDescription>
-                {t('check_subtitle')}
-              </CardDescription>
-            </CardHeader>
+          {/* Page title */}
+          <div className="text-center mb-8 fade-in-section visible">
+            <div className="w-14 h-14 rounded-full bg-epfo-indigo/10 flex items-center justify-center mx-auto mb-4">
+              <Search className="w-7 h-7 text-epfo-indigo" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1a237e] mb-2">
+              {t('check_title')}
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              {t('check_subtitle')}
+            </p>
+          </div>
 
+          {/* Search Card */}
+          <Card className="gov-card border-gray-200 shadow-sm mb-6">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg text-[#1a237e]">{t('uan_label')}</CardTitle>
+              <CardDescription>{t('check_subtitle')}</CardDescription>
+            </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="uan"
-                    className="block text-sm font-medium mb-1"
-                  >
-                    {t('uan_label')}
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      id="uan"
-                      type="text"
-                      inputMode="numeric"
-                      value={uan}
-                      onChange={(e) => setUan(e.target.value)}
-                      placeholder={t('uan_placeholder')}
-                      className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      disabled={loading}
-                      required
-                      autoComplete="off"
-                    />
-                    <VoiceInput onTranscript={(text) => setUan(text)} />
-                  </div>
+                <div className="flex gap-2">
+                  <input
+                    id="uan"
+                    type="text"
+                    inputMode="numeric"
+                    value={uan}
+                    onChange={(e) => setUan(e.target.value)}
+                    placeholder={t('uan_placeholder')}
+                    className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-epfo-indigo/50 focus-visible:border-epfo-indigo transition-colors"
+                    disabled={loading}
+                    required
+                    autoComplete="off"
+                  />
+                  <VoiceInput onTranscript={(text) => setUan(text)} />
                 </div>
 
                 {error && (
-                  <div
-                    className="rounded-md bg-danger-50 border border-danger-200 p-3 text-sm text-danger-700"
-                    role="alert"
-                  >
+                  <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700" role="alert">
                     {error}
                   </div>
                 )}
 
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full bg-epfo-indigo hover:bg-epfo-navy text-white py-6 text-base btn-press"
                   size="lg"
                   disabled={loading || !uan.trim()}
                 >
@@ -125,45 +121,47 @@ export default function ClaimCheckPage() {
                   )}
                 </Button>
               </form>
+            </CardContent>
+          </Card>
 
-              <div className="mt-6 rounded-md bg-primary-50 border border-primary-200 p-4">
-                <p className="text-xs font-medium text-primary-700 mb-2">
-                  {t('demo_uans')}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { uan: '123456789', label: 'Employer block' },
-                    { uan: '987654321', label: 'KYC mismatch' },
-                    { uan: '555555555', label: 'Processing' },
-                    { uan: '111111111', label: 'Settled' },
-                  ].map((demo) => (
-                    <button
-                      key={demo.uan}
-                      type="button"
-                      onClick={() => setUan(demo.uan)}
-                      className="text-xs"
-                    >
-                      <Badge
-                        variant="outline"
-                        className="cursor-pointer hover:bg-primary-100 transition-colors"
-                      >
-                        {demo.uan}{' '}
-                        <span className="text-muted-foreground ml-1">
-                          ({demo.label})
-                        </span>
-                      </Badge>
-                    </button>
-                  ))}
-                </div>
+          {/* Demo UANs */}
+          <Card className="border-amber-200 bg-amber-50/50">
+            <CardContent className="pt-5">
+              <p className="text-xs font-semibold text-amber-800 mb-3 flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-amber-200 text-amber-700 flex items-center justify-center text-[10px] font-bold">?</span>
+                {t('demo_uans')}
+              </p>
+              <div className="space-y-2">
+                {DEMO_CLAIMS.map((demo) => (
+                  <button
+                    key={demo.uan}
+                    type="button"
+                    onClick={() => setUan(demo.uan)}
+                    className="w-full flex items-center justify-between px-3 py-2.5 bg-white rounded-lg border border-amber-200 hover:border-epfo-indigo hover:shadow-sm transition-all group text-left"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono font-medium text-sm text-[#1a237e]">{demo.uan}</span>
+                      <span className="text-xs text-muted-foreground">{demo.label}</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                ))}
               </div>
             </CardContent>
           </Card>
 
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            {t('disclaimer')}
-          </p>
+          {/* Quick links */}
+          <div className="mt-6 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+            <Link href="/tools/kyc-check" className="flex items-center gap-1 hover:text-epfo-indigo transition-colors">
+              <ShieldCheck className="w-3 h-3" /> {t('nav_kyc_check')}
+            </Link>
+            <span className="text-gray-300">|</span>
+            <Link href="/tools/escalate" className="flex items-center gap-1 hover:text-epfo-indigo transition-colors">
+              {t('nav_escalate')}
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </GovPageShell>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Play } from 'lucide-react';
+import { ArrowRight, Play, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import BeforeAfterComparison from '@/components/BeforeAfterComparison';
+import GovPageShell from '@/components/GovPageShell';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const DEMO_STEPS = [
   {
@@ -72,89 +74,67 @@ const DEMO_STEPS = [
 ];
 
 export default function DemoPage() {
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(0);
   const step = DEMO_STEPS[currentStep];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white">
-      {/* Header */}
-      <header className="container mx-auto px-4 py-6 flex items-center justify-between">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
-        </Link>
-        <Badge variant="outline" className="bg-primary-50">
-          🎬 Interactive Demo
-        </Badge>
-      </header>
-
-      <main className="container mx-auto px-4 pb-20">
+    <GovPageShell breadcrumbs={[{ label: t('footer_interactive_demo') }]}>
+      <div className="container mx-auto px-4 py-8 pb-16">
         {/* Progress Bar */}
         <div className="max-w-4xl mx-auto mb-8">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium">
+            <p className="text-sm font-medium text-[#1a237e]">
               Step {currentStep + 1} of {DEMO_STEPS.length}
             </p>
             <p className="text-sm text-muted-foreground">
-              {Math.round(((currentStep + 1) / DEMO_STEPS.length) * 100)}%
-              complete
+              {Math.round(((currentStep + 1) / DEMO_STEPS.length) * 100)}% complete
             </p>
           </div>
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary transition-all duration-300"
-              style={{
-                width: `${((currentStep + 1) / DEMO_STEPS.length) * 100}%`,
-              }}
+              className="h-full bg-epfo-indigo transition-all duration-500 ease-out rounded-full"
+              style={{ width: `${((currentStep + 1) / DEMO_STEPS.length) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Step Content */}
-        <div className="max-w-4xl mx-auto space-y-6">
-          <Card>
+        <div className="max-w-4xl mx-auto space-y-5">
+          <Card className="gov-card border-gray-200">
             <CardHeader>
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <CardTitle className="text-2xl sm:text-3xl">
+                  <CardTitle className="text-2xl sm:text-3xl text-[#1a237e]">
                     {step.title}
                   </CardTitle>
                   <CardDescription className="text-base mt-2">
                     {step.description}
                   </CardDescription>
                 </div>
-                <Badge variant="outline" className="shrink-0">
+                <Badge variant="outline" className="shrink-0 border-epfo-indigo/30 text-epfo-indigo">
                   {currentStep + 1}/{DEMO_STEPS.length}
                 </Badge>
               </div>
             </CardHeader>
 
             <CardContent className="space-y-6">
-              {/* Step 1: Before/After Comparison */}
               {step.component === 'comparison' && <BeforeAfterComparison />}
 
-              {/* Step 2+: Demo UANs or Instructions */}
               {step.demoUANs && (
                 <div className="space-y-3">
-                  <p className="text-sm font-medium">
+                  <p className="text-sm font-medium text-[#1a237e]">
                     Try these demo UANs to see different scenarios:
                   </p>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {step.demoUANs.map((demo) => (
                       <Link key={demo.uan} href={`/claim/${demo.uan}`}>
-                        <Card className="cursor-pointer hover:border-primary transition-colors">
+                        <Card className="cursor-pointer hover:border-epfo-indigo hover:shadow-sm transition-all gov-card">
                           <CardContent className="pt-4">
                             <div className="flex items-center justify-between">
                               <div>
-                                <p className="font-mono font-medium">
-                                  {demo.uan}
-                                </p>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  {demo.label}
-                                </p>
+                                <p className="font-mono font-medium text-[#1a237e]">{demo.uan}</p>
+                                <p className="text-xs text-muted-foreground mt-1">{demo.label}</p>
                               </div>
                               <ArrowRight className="w-4 h-4 text-muted-foreground" />
                             </div>
@@ -166,40 +146,38 @@ export default function DemoPage() {
                 </div>
               )}
 
-              {/* Special note for certain steps */}
               {step.note && (
-                <div className="rounded-md bg-primary-50 border border-primary-200 p-4">
-                  <p className="text-sm text-primary-800">{step.note}</p>
+                <div className="rounded-lg bg-blue-50 border border-blue-200 p-4">
+                  <p className="text-sm text-blue-800">{step.note}</p>
                 </div>
               )}
 
-              {/* Action Button */}
               <div className="flex items-center justify-between pt-4 border-t">
                 <Button
                   variant="outline"
                   onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                   disabled={currentStep === 0}
+                  className="gap-2 btn-press"
                 >
-                  ← Previous
+                  <ArrowLeft className="w-4 h-4" />
+                  Previous
                 </Button>
 
                 {step.link ? (
                   <Link href={step.link}>
-                    <Button>
-                      <Play className="w-4 h-4 mr-2" />
+                    <Button className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press gap-2">
+                      <Play className="w-4 h-4" />
                       {step.action}
                     </Button>
                   </Link>
                 ) : (
                   <Button
-                    onClick={() =>
-                      setCurrentStep(
-                        Math.min(DEMO_STEPS.length - 1, currentStep + 1),
-                      )
-                    }
+                    onClick={() => setCurrentStep(Math.min(DEMO_STEPS.length - 1, currentStep + 1))}
                     disabled={currentStep === DEMO_STEPS.length - 1}
+                    className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press gap-2"
                   >
-                    Next →
+                    Next
+                    <ArrowRight className="w-4 h-4" />
                   </Button>
                 )}
               </div>
@@ -207,9 +185,9 @@ export default function DemoPage() {
           </Card>
 
           {/* Quick Navigation */}
-          <Card className="bg-muted/50">
-            <CardHeader>
-              <CardTitle className="text-sm">Quick Navigation</CardTitle>
+          <Card className="border-gray-200 bg-gray-50/50">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm text-[#1a237e]">Quick Navigation</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
@@ -219,7 +197,7 @@ export default function DemoPage() {
                     variant={idx === currentStep ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setCurrentStep(idx)}
-                    className="text-xs"
+                    className={`text-xs btn-press ${idx === currentStep ? 'bg-epfo-indigo hover:bg-epfo-navy text-white' : ''}`}
                   >
                     {idx + 1}. {s.title.split(':')[0]}
                   </Button>
@@ -229,35 +207,35 @@ export default function DemoPage() {
           </Card>
 
           {/* Judge's Note */}
-          <div className="rounded-lg border-2 border-secondary bg-secondary-50 p-6">
-            <p className="text-sm font-bold text-secondary-900 mb-2">
-              🎯 For Judges: What Makes This Special
+          <div className="rounded-xl border-2 border-epfo-indigo/30 bg-indigo-50/50 p-6">
+            <p className="text-sm font-bold text-[#1a237e] mb-3">
+              For Judges: What Makes This Special
             </p>
-            <ul className="text-sm text-secondary-800 space-y-1 list-disc list-inside">
-              <li>
-                <strong>Real Problem:</strong> 8 crore+ EPFO members frustrated
-                by opaque status
+            <ul className="text-sm text-[#1a237e]/80 space-y-2">
+              <li className="flex items-start gap-2">
+                <span className="w-5 h-5 rounded-full bg-epfo-indigo text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+                <span><strong>Real Problem:</strong> 8 crore+ EPFO members frustrated by opaque status</span>
               </li>
-              <li>
-                <strong>Technical Depth:</strong> AI diagnosis, India Stack
-                (WhatsApp, BHASHINI), Next.js 14
+              <li className="flex items-start gap-2">
+                <span className="w-5 h-5 rounded-full bg-epfo-indigo text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+                <span><strong>Technical Depth:</strong> AI diagnosis, India Stack (WhatsApp, BHASHINI), Next.js 14</span>
               </li>
-              <li>
-                <strong>Instant Impact:</strong> Reduce helpline load by 60%+,
-                empower citizens
+              <li className="flex items-start gap-2">
+                <span className="w-5 h-5 rounded-full bg-epfo-indigo text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+                <span><strong>Instant Impact:</strong> Reduce helpline load by 60%+, empower citizens</span>
               </li>
-              <li>
-                <strong>Scalable:</strong> Pattern applies to all government
-                services (PAN, Passport, Aadhaar)
+              <li className="flex items-start gap-2">
+                <span className="w-5 h-5 rounded-full bg-epfo-indigo text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+                <span><strong>Scalable:</strong> Pattern applies to all government services (PAN, Passport, Aadhaar)</span>
               </li>
-              <li>
-                <strong>Production-Ready:</strong> Mock adapters ready for real
-                API integration
+              <li className="flex items-start gap-2">
+                <span className="w-5 h-5 rounded-full bg-epfo-indigo text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">5</span>
+                <span><strong>Production-Ready:</strong> Mock adapters ready for real API integration</span>
               </li>
             </ul>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </GovPageShell>
   );
 }

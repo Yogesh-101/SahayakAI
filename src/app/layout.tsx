@@ -19,6 +19,10 @@ export const metadata: Metadata = {
     "SahayakAI",
   ],
   authors: [{ name: "SahayakAI Team" }],
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/logo.svg",
+  },
   openGraph: {
     title: "SahayakAI - Track Your EPFO Claim",
     description:
@@ -32,7 +36,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#4F46E5",
+  themeColor: "#3B3F8C",
 };
 
 export default function RootLayout({
