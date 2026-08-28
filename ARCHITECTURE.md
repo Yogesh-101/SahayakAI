@@ -1,5 +1,6 @@
 # SahayakAI — System Architecture
 
+**Live demo:** [sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app) · **Judge walkthrough:** `/demo`
 ## High-Level Flow
 
 ```
@@ -44,7 +45,7 @@ Citizen (Web / WhatsApp / Voice)
 | KYC Health Check | `KYCHealthScore` | `kyc-validator` | `/tools/kyc-check` |
 | Legal Escalation | Escalate page UI | `legal-document-generator` | `/tools/escalate` |
 | Multilingual UI | `LanguageToggle` | `LanguageContext` | All pages |
-| Gov Layout | `GovPageShell` | Breadcrumbs, footer, top bar | Inner pages |
+| Gov Layout | `GovPageShell` | Breadcrumbs, footer, sticky header (no official gov branding) | Inner pages |
 
 ## Architecture Decisions
 
@@ -53,7 +54,8 @@ Citizen (Web / WhatsApp / Voice)
 OpenAI diagnosis runs **server-side** via `/api/claim/diagnose`:
 - API key never reaches the client bundle
 - Secure via `process.env.OPENAI_API_KEY`
-- Falls back to rule-based engine when no key is configured
+- Falls back to rule-based engine when no key is configured or the API returns an error (e.g. quota exceeded)
+- Response includes `source: 'openai' | 'rules'`; `DiagnosisPanel` shows the matching UI badge
 
 ### 2. Adapter Pattern for External APIs
 
@@ -77,30 +79,30 @@ KYC validation, legal document generation, rights engine, and email generation r
 - EPFiGMS / RTI Online APIs for legal escalation
 - Email/SMS gateway for employer notifications
 
-### 4. Shared Government Layout (`GovPageShell`)
+### 4. Shared Inner-Page Layout (`GovPageShell`)
 
-Inner pages share a consistent shell:
-- Slim government identity bar (Indian flag + "Government of India")
+Inner pages share a consistent shell (EPFO-inspired styling, not official government branding):
+- Footer disclaimer (hackathon / mock-data notice)
 - Sticky header with logo, nav links, CTA
 - Breadcrumb navigation
 - Footer with helplines and EPFO resource links
 - Scroll-to-top button
 
-Homepage (`page.tsx`) uses its own inline header/hero/footer for the landing experience.
+Homepage (`page.tsx`) uses its own centered hero layout with inline header/footer for the landing experience.
 
 ### 5. Diagnosis Service — Dual Engine
 
 ```
 Request → POST /api/claim/diagnose
    │
-   ├── OPENAI_API_KEY set? → GPT-3.5-Turbo analysis
-   │      └── Parse JSON → Validate → Return Diagnosis
+   ├── OPENAI_API_KEY set and API succeeds? → GPT-3.5-Turbo analysis
+   │      └── Parse JSON → Validate → Return { diagnosis, source: 'openai' }
    │
-   └── No API key? → Rule-based engine
-          └── Match stage + status + duration → Return Diagnosis
+   └── No key, API error, or quota issue? → Rule-based engine
+          └── Match stage + status + duration → Return { diagnosis, source: 'rules' }
 ```
 
-Both engines return the same `Diagnosis` interface.
+Both engines return the same `Diagnosis` interface. The client displays the actual `source` from the API response.
 
 ### 6. Internationalization (i18n)
 
@@ -134,7 +136,7 @@ src/
 │
 ├── components/
 │   ├── ui/                      # shadcn/ui primitives
-│   ├── GovPageShell.tsx         # Shared gov layout
+│   ├── GovPageShell.tsx         # Shared inner-page layout
 │   ├── ClaimStatusTimeline.tsx
 │   ├── DiagnosisPanel.tsx
 │   ├── EmailTracker.tsx
@@ -178,8 +180,8 @@ src/
 3. Adapter calls GET /api/claim/status?uan=...
 4. API route returns mock ClaimStatus (~300ms simulated latency)
 5. Router navigates to /claim/{uan}
-5. GovPageShell wraps the page with gov header + breadcrumbs
-6. Page renders 6 sections:
+6. GovPageShell wraps the page with header, breadcrumbs, and footer
+7. Page renders 6 sections:
    a. Claim Overview (summary card)
    b. Status & Tracking (ClaimStatusTimeline)
    c. AI Diagnosis & Actions (DiagnosisPanel + EmailTracker)
@@ -231,4 +233,4 @@ src/
 | Email to Employer | Copy-to-clipboard | SMTP / transactional email API |
 | Database | In-memory / localStorage | PostgreSQL / Supabase |
 | Auth | None | EPFO OAuth + Aadhaar OTP |
-| Deployment | localhost | Vercel / NIC Cloud |
+| Deployment | Vercel ([sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app)) | Vercel / NIC Cloud |

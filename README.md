@@ -8,7 +8,7 @@
 **Live demo:** [https://sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app)  
 **Judge walkthrough:** [https://sahayak-ai-brown.vercel.app/demo](https://sahayak-ai-brown.vercel.app/demo)
 
-SahayakAI transforms India's opaque EPFO claim tracking into a transparent, AI-powered experience. Citizens see real-time stage-by-stage progress, get AI diagnosis of bottlenecks, and receive actionable resolution guidance—all via WhatsApp notifications.
+SahayakAI transforms India's opaque EPFO claim tracking into a transparent, AI-powered experience. Citizens see real-time stage-by-stage progress, get AI diagnosis of bottlenecks, and receive actionable resolution guidance—with a **mock WhatsApp preview** of how proactive alerts could work in production.
 
 ### Hackathon compliance
 
@@ -64,7 +64,7 @@ Visual timeline showing progress across 4 stages:
 - Payment Processing
 
 ### 2️⃣ **AI-Powered Bottleneck Diagnosis**
-GPT-3.5-Turbo analyzes claim data and provides:
+GPT-3.5-Turbo analyzes claim data when the API is available; otherwise a rule-based engine provides the same structure. The UI badge shows which engine ran (**GPT-3.5 powered** vs **Rule-based demo mode**). Diagnosis includes:
 - Plain-language problem description
 - Confidence scoring (0-100%)
 - Supporting evidence
@@ -93,7 +93,7 @@ Simulated alerts showing how WhatsApp notifications would work:
 ### 6️⃣ **Pre-Filing KYC Health Checker** *(NEW)*
 - Cross-checks Name, DOB across EPFO, PAN, and Aadhaar records
 - Traffic-light scoring (Green/Yellow/Red) with fix recommendations
-- Prevents 30% of claim delays caused by KYC mismatches
+- Designed to catch KYC mismatches before filing — a common cause of claim delays
 - Direct links to correction portals (NSDL, myAadhaar, EPFO)
 
 ### 7️⃣ **Peer Comparison Analytics** *(NEW)*
@@ -130,27 +130,28 @@ Simulated alerts showing how WhatsApp notifications would work:
 ## 🏆 Why This Wins
 
 ### **Impact**
-- **Reduce helpline calls by 60%+** — Citizens self-serve with clear guidance
+- **Reduces confusion and repeat portal checks** — Citizens self-serve with clear stage visibility and next steps
 - **8 crore+ potential users** — Every EPFO member benefits
-- **Scalable pattern** — Applies to PAN, Passport, Aadhaar, any government service
-- **Prevent 30% of delays** — KYC Health Checker catches issues before filing
-- **Shift power to citizens** — Legal tools, financial data, and rights awareness
+- **Scalable pattern** — Same approach could apply to PAN, Passport, Aadhaar, and other public services
+- **Pre-filing KYC checks** — Health Checker catches document mismatches before a claim is filed
+- **Shifts power to citizens** — Legal tools, financial impact data, and rights awareness in one place
 
 ### **Technical Excellence**
-- **Next.js 16** (App Router, Turbopack, React Server Components)
-- **OpenAI GPT-3.5-Turbo** for diagnosis
-- **India Stack Integration** (WhatsApp Business API, BHASHINI)
+- **Next.js 16** (App Router, Turbopack)
+- **OpenAI GPT-3.5-Turbo** for diagnosis (with rule-based fallback when API is unavailable)
+- **Planned India Stack** — mock previews for WhatsApp and BHASHINI voice input (clearly labeled in UI)
 - **TypeScript strict mode** with comprehensive type safety
 - **Tailwind CSS + shadcn/ui** for polished, accessible UI
 - **Mock adapters** ready for production API integration
 - **11 integrated features** working together as a complete platform
 
 ### **Demonstrable**
+- **Live demo:** [sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app)
 - **4 demo scenarios** (Employer Block, KYC Mismatch, Processing, Settled)
-- **Interactive guided demo** for judges
+- **Interactive guided demo** for judges at `/demo`
 - **Before/After comparison** showing the transformation
 - **Standalone tools** (KYC Checker, Legal Escalation) accessible from homepage
-- **Runs locally** in < 2 minutes
+- **Runs locally** in under 2 minutes
 
 ---
 
@@ -198,7 +199,7 @@ The interactive demo guides you through:
 2. Real-time claim tracking
 3. AI bottleneck diagnosis
 4. Resolution guidance
-5. WhatsApp notifications
+5. WhatsApp notifications (mock preview)
 6. Multilingual support
 
 ### Demo UANs (Try These)
@@ -216,7 +217,7 @@ The interactive demo guides you through:
 
 | Route | Description |
 |-------|-------------|
-| `/` | Homepage — EPFO-inspired hero, features, tools, India Stack, CTA |
+| `/` | Homepage — centered hero, features, tools, mock India Stack previews, CTA |
 | `/claim/check` | UAN input form with voice input and demo UAN shortcuts |
 | `/claim/[id]` | Claim dashboard — timeline, AI diagnosis, analytics, rights, WhatsApp |
 | `/tools/kyc-check` | Pre-filing KYC Health Checker (standalone tool) |
@@ -236,7 +237,7 @@ sahayak-ai/
 │   ├── hero-illustration.svg   # Original abstract hero art (no gov logos)
 ├── src/
 │   ├── app/                    # Next.js App Router
-│   │   ├── page.tsx            # Homepage (EPFO-themed)
+│   │   ├── page.tsx            # Homepage (centered hero, landing layout)
 │   │   ├── layout.tsx          # Root layout, favicon, theme color
 │   │   ├── globals.css         # EPFO animations, gov-card utilities
 │   │   ├── api/claim/
@@ -251,7 +252,7 @@ sahayak-ai/
 │   │   └── demo/page.tsx       # Judge walkthrough
 │   ├── components/
 │   │   ├── ui/                 # shadcn/ui primitives
-│   │   ├── GovPageShell.tsx    # Shared gov layout (header, breadcrumbs, footer)
+│   │   ├── GovPageShell.tsx    # Shared inner-page layout (header, breadcrumbs, footer)
 │   │   ├── ClaimStatusTimeline.tsx
 │   │   ├── DiagnosisPanel.tsx
 │   │   ├── EmailTracker.tsx    # Smart email + follow-up tracking
@@ -290,16 +291,18 @@ sahayak-ai/
 
 ### AI Diagnosis (OpenAI + Rule-Based Fallback)
 
-**With OpenAI API Key:**
+**With OpenAI API Key (and available quota):**
 - Calls GPT-3.5-Turbo with claim context
 - Gets natural language diagnosis
 - Confidence scoring based on evidence
 - Resolution strategy mapping
+- UI badge shows **GPT-3.5 powered**
 
-**Without API Key (Demo Mode):**
+**Without API Key or quota (Demo Mode):**
 - Rule-based diagnosis engine
 - Checks stage status and time in stage
 - Pattern matching on blocker reasons
+- UI badge shows **Rule-based demo mode**
 - Still provides actionable guidance
 
 **File:** `src/lib/services/diagnosis-service.ts`
@@ -319,18 +322,15 @@ This allows:
 
 **File:** `src/lib/mock-data/claims.ts` (4 complete claim scenarios)
 
-### India Stack Integrations (Mock)
+### India Stack Integrations (Mock Previews)
 
-1. **WhatsApp Business API**
-   - Notifications at each stage change
-   - Blocker alerts with resolution links
-   - Settlement confirmations
-   - **Production:** Use official WhatsApp Business API
+1. **WhatsApp Business API (Mock Preview)**
+   - UI preview of notifications at each stage change
+   - Not sent to a real phone — labeled **Mock Preview** in the app
 
-2. **BHASHINI (Voice Input)**
-   - Mock speech recognition in demo
-   - Supports English and Hindi transcription
-   - **Production:** Integrate BHASHINI REST API
+2. **BHASHINI Voice Input (Mock Preview)**
+   - Simulated speech recognition on the claim check page
+   - Hindi and English UI today; production would use BHASHINI REST API
 
 **Files:**
 - `src/components/WhatsAppPreview.tsx`
@@ -349,10 +349,10 @@ This allows:
 
 ## 🎨 Design System
 
-**EPFO-Inspired Government Theme:**
+**EPFO-Inspired Theme (not official government branding):**
 - **Navy** (`#1a237e`) — Headings, primary CTAs, navbar accents
 - **Purple** (`#7c3aed`) — Hero highlights, accent text
-- **Lavender gradient** — Hero background (light left → dark right)
+- **Centered hero** — Lavender radial gradient, hackathon badge, clear CTAs
 - **Footer disclaimer** — States hackathon prototype status and non-affiliation with EPFO or Government of India
 - **GovPageShell** — Shared layout for inner pages (breadcrumbs, footer, scroll-to-top)
 
@@ -432,10 +432,10 @@ npm run lint      # Run ESLint
 ✅ Validated by real grievances on EPFO portal
 
 ### **2. Technical Implementation**
-✅ Next.js 16, TypeScript, OpenAI integration  
+✅ Next.js 16, TypeScript, OpenAI integration (with rule-based fallback)  
 ✅ Production-ready architecture (adapters, services, types)  
 ✅ 11 integrated features across 9 routes  
-✅ Demonstrable: 4 complete scenarios, runs locally in 2 minutes
+✅ Live demo + local run: [sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app)
 
 ### **3. India Stack Integration (Mock Previews)**
 🔶 WhatsApp Business API — mock preview of notifications  
@@ -459,7 +459,7 @@ npm run lint      # Run ESLint
 
 - **EPFO** for the Unified Member Portal documentation
 - **OpenAI** for GPT-3.5-Turbo API
-- **India Stack** (WhatsApp Business API, BHASHINI)
+- **India Stack** — planned WhatsApp and BHASHINI integrations (mock previews in app)
 - **shadcn/ui** for the component library
 - **Vercel** for Next.js
 
@@ -473,7 +473,8 @@ npm run lint      # Run ESLint
 | All 11 features implemented | ✅ Complete |
 | 4 demo UAN scenarios | ✅ Working |
 | Hindi/English i18n | ✅ Homepage + inner pages |
-| EPFO-inspired UI + government branding | ✅ Complete |
+| EPFO-inspired UI (no official gov branding) | ✅ Complete |
+| Live deployment (Vercel) | ✅ [sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app) |
 | API routes (`/api/claim/status`, `/api/claim/diagnose`) | ✅ Working |
 | README.md | ✅ Updated |
 | ARCHITECTURE.md | ✅ Updated |

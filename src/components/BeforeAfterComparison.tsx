@@ -263,7 +263,7 @@ export default function BeforeAfterComparison() {
       {/* Impact Statement */}
       <div className="rounded-lg border-2 border-primary bg-primary-50 p-6 text-center">
         <p className="text-lg font-bold text-primary-900 mb-2">
-          💡 Impact: Reduce Helpline Calls by 60%+
+          💡 Impact: Fewer repeat portal checks and clearer next steps
         </p>
         <p className="text-sm text-primary-800">
           Citizens resolve issues themselves with clear guidance, freeing EPFO
