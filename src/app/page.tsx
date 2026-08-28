@@ -91,9 +91,6 @@ export default function Home() {
         <nav className="flex items-center justify-between" aria-label="Main navigation">
           <div className="flex items-center gap-2">
             <div className="text-2xl font-bold text-primary">{t('app_name')}</div>
-            <div className="text-sm text-muted-foreground hidden sm:block">
-              सहायक AI
-            </div>
           </div>
           <div className="flex items-center gap-3">
             <LanguageToggle />
