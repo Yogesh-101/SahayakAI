@@ -1,4 +1,5 @@
 import type { ClaimStatus } from '@/types/claim';
+import { parseClaimStatus } from '@/lib/claim-parser';
 
 /**
  * EPFO claim status adapter.
@@ -26,7 +27,7 @@ export async function fetchClaimStatus(
     { cache: 'no-store' },
   );
 
-  const payload = (await response.json()) as { claim?: ClaimStatus; error?: string };
+  const payload = (await response.json()) as { claim?: Record<string, unknown>; error?: string };
 
   if (!response.ok) {
     throw new Error(
@@ -39,9 +40,11 @@ export async function fetchClaimStatus(
     throw new Error(`Claim not found for UAN ${uan}.`);
   }
 
+  const claim = parseClaimStatus(payload.claim);
+
   console.log(
-    `[MOCK EPFO API] Found claim ${payload.claim.claimId} — stage: ${payload.claim.currentStage}`,
+    `[MOCK EPFO API] Found claim ${claim.claimId} — stage: ${claim.currentStage}`,
   );
 
-  return payload.claim;
+  return claim;
 }
