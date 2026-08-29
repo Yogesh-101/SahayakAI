@@ -35,8 +35,10 @@ function ClaimLayoutInner({ children }: { children: ReactNode }) {
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - 88;
-    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    // Wait for route paint, then scroll so section title clears sticky header + tab bar
+    requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   }, [pathname]);
 
   if (loading) {
@@ -99,7 +101,7 @@ function ClaimLayoutInner({ children }: { children: ReactNode }) {
         <div
           id="claim-section"
           ref={contentRef}
-          className="pt-4 pb-4 min-h-[58vh] flex flex-col justify-center"
+          className="scroll-mt-[8.75rem] pt-2 pb-4"
         >
           {children}
         </div>

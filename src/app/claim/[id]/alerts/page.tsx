@@ -18,7 +18,7 @@ export default function ClaimAlertsPage() {
       title={t('whatsapp_title')}
       subtitle={t('whatsapp_subtitle')}
     >
-      <WhatsAppPreview claim={claim} />
+      <WhatsAppPreview claim={claim} hideHeader />
     </ClaimSection>
   );
 }

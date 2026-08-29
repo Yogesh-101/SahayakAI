@@ -18,9 +18,10 @@ import type { ClaimStatus } from '@/types/claim';
 
 interface WhatsAppPreviewProps {
   claim: ClaimStatus;
+  hideHeader?: boolean;
 }
 
-export default function WhatsAppPreview({ claim }: WhatsAppPreviewProps) {
+export default function WhatsAppPreview({ claim, hideHeader = false }: WhatsAppPreviewProps) {
   const { t } = useLanguage();
   const [expanded, setExpanded] = useState(false);
 
@@ -29,20 +30,22 @@ export default function WhatsAppPreview({ claim }: WhatsAppPreviewProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-start gap-3">
-          <MessageCircle className="w-6 h-6 text-secondary-600 shrink-0" />
-          <div className="flex-1">
-            <CardTitle className="text-lg">{t('whatsapp_title')}</CardTitle>
-            <CardDescription>{t('whatsapp_subtitle')}</CardDescription>
+      {!hideHeader && (
+        <CardHeader>
+          <div className="flex items-start gap-3">
+            <MessageCircle className="w-6 h-6 text-secondary-600 shrink-0" />
+            <div className="flex-1">
+              <CardTitle className="text-lg">{t('whatsapp_title')}</CardTitle>
+              <CardDescription>{t('whatsapp_subtitle')}</CardDescription>
+            </div>
+            <Badge variant="outline" className="text-xs bg-amber-50 text-amber-800 border-amber-300">
+              {t('whatsapp_demo_badge')}
+            </Badge>
           </div>
-          <Badge variant="outline" className="text-xs bg-amber-50 text-amber-800 border-amber-300">
-            {t('whatsapp_demo_badge')}
-          </Badge>
-        </div>
-      </CardHeader>
+        </CardHeader>
+      )}
 
-      <CardContent>
+      <CardContent className={hideHeader ? 'pt-6' : undefined}>
         {/* WhatsApp-style chat UI */}
         <div className="rounded-lg border bg-[#ECE5DD] p-4 space-y-3 max-h-96 overflow-y-auto">
           {notifications
