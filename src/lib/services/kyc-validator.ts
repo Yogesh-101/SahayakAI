@@ -31,7 +31,7 @@ interface MockKYCProfile {
 }
 
 const MOCK_PROFILES: Record<string, MockKYCProfile> = {
-  '123456789': {
+  '123456789012': {
     epfoName: 'Priya S Sharma',
     panName: 'Priya Sharma',
     aadhaarName: 'Priya Singh Sharma',
@@ -43,7 +43,7 @@ const MOCK_PROFILES: Record<string, MockKYCProfile> = {
     employerName: 'TechVista Solutions Pvt Ltd',
     mobileLinked: true,
   },
-  '987654321': {
+  '987654321098': {
     epfoName: 'Rajesh Kumar Sharma',
     panName: 'Rajesh Kr Sharma',
     aadhaarName: 'Rajesh Kumar Sharma',
@@ -55,7 +55,7 @@ const MOCK_PROFILES: Record<string, MockKYCProfile> = {
     employerName: 'BrightSteel Manufacturing',
     mobileLinked: true,
   },
-  '555555555': {
+  '555555555555': {
     epfoName: 'Ananya Patel',
     panName: 'Ananya Patel',
     aadhaarName: 'Ananya Patel',
@@ -67,7 +67,7 @@ const MOCK_PROFILES: Record<string, MockKYCProfile> = {
     employerName: 'Cloudbridge IT Services',
     mobileLinked: true,
   },
-  '111111111': {
+  '111111111111': {
     epfoName: 'Suresh Reddy',
     panName: 'Suresh Reddy',
     aadhaarName: 'Suresh Reddy',

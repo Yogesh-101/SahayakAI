@@ -3,10 +3,12 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { ArrowLeft, ArrowUp, Home, ChevronRight, Phone, FileText, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LanguageToggle from '@/components/LanguageToggle';
 import MobileNav from '@/components/MobileNav';
+import PrototypeBadge from '@/components/PrototypeBadge';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Breadcrumb {
@@ -28,6 +30,9 @@ export default function GovPageShell({
   backLabel,
 }: GovPageShellProps) {
   const { t } = useLanguage();
+  const pathname = usePathname();
+  const isClaimDashboard =
+    pathname?.startsWith('/claim/') && pathname !== '/claim/check';
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -66,7 +71,7 @@ export default function GovPageShell({
               {[
                 { href: '/tools/kyc-check', label: t('nav_kyc_check') },
                 { href: '/tools/escalate', label: t('nav_escalate') },
-                { href: '/demo', label: 'Demo' },
+                { href: '/demo', label: t('nav_tour') },
               ].map((link) => (
                 <Link key={link.href} href={link.href} className="relative h-full flex items-center px-3.5 text-[13px] font-medium text-gray-600 hover:text-epfo-indigo transition-colors after:absolute after:bottom-0 after:left-3.5 after:right-3.5 after:h-0.5 after:bg-epfo-indigo after:scale-x-0 hover:after:scale-x-100 after:transition-transform">
                   {link.label}
@@ -76,8 +81,8 @@ export default function GovPageShell({
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <MobileNav />
               <LanguageToggle />
-              <Link href="/claim/check" className="hidden xs:block">
-                <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-9 px-3 sm:px-4 text-xs min-h-[44px]">
+              <Link href="/claim/check" className="hidden sm:block">
+                <Button size="sm" variant="gov" className="h-9 px-3 sm:px-4 text-xs">
                   {t('cta_check_status')}
                 </Button>
               </Link>
@@ -91,7 +96,7 @@ export default function GovPageShell({
         <div className="bg-white border-b" suppressHydrationWarning>
           <div className="container mx-auto px-4 py-2" suppressHydrationWarning>
             <nav
-              className="flex items-center gap-1 text-xs text-muted-foreground"
+              className="flex items-center gap-1 text-xs text-muted-foreground flex-wrap"
               aria-label="Breadcrumb"
               suppressHydrationWarning
             >
@@ -109,6 +114,7 @@ export default function GovPageShell({
                   )}
                 </span>
               ))}
+              <PrototypeBadge className="ml-auto shrink-0" />
             </nav>
           </div>
         </div>
@@ -171,10 +177,12 @@ export default function GovPageShell({
 
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-epfo-indigo text-white shadow-lg flex items-center justify-center transition-all duration-300 btn-press ${
+        className={`fixed right-6 z-50 w-10 h-10 rounded-full bg-epfo-indigo text-white shadow-lg flex items-center justify-center transition-all duration-300 btn-press ${
+          isClaimDashboard ? 'bottom-24' : 'bottom-6'
+        } ${
           showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
-        aria-label="Scroll to top"
+        aria-label={t('scroll_to_top')}
       >
         <ArrowUp className="w-5 h-5" />
       </button>

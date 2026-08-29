@@ -142,7 +142,6 @@ export default function FinancialImpact({ claim }: FinancialImpactProps) {
         <p className="text-[10px] text-muted-foreground text-center">
           {t('finance_footnote').replace('{amount}', claim.amount.toLocaleString('en-IN'))}
         </p>
-        <p className="text-[10px] text-muted-foreground text-center">{t('analytics_mock_data')}</p>
       </CardContent>
     </Card>
   );

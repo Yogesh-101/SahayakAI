@@ -1,13 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Scale, Copy, ExternalLink, FileText, Loader2, AlertTriangle, Search } from 'lucide-react';
+import { Scale, Copy, ExternalLink, FileText, AlertTriangle, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
 import GovPageShell from '@/components/GovPageShell';
+import ToolPageHeader from '@/components/ui/ToolPageHeader';
+import GovInput from '@/components/ui/GovInput';
+import DemoUanList from '@/components/ui/DemoUanList';
+import PageLoading from '@/components/ui/PageLoading';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getClaimByUAN } from '@/lib/mock-data/claims';
 import {
@@ -17,6 +20,14 @@ import {
   type LegalDocument,
 } from '@/lib/services/legal-document-generator';
 import type { ClaimStatus } from '@/types/claim';
+import { cn } from '@/lib/utils';
+import {
+  DEMO_UAN_EMPLOYER,
+  DEMO_UAN_KYC,
+  DEMO_UAN_LENGTH,
+  formatDemoUanList,
+  isValidUan,
+} from '@/lib/claim-session';
 
 export default function EscalatePage() {
   const { t } = useLanguage();
@@ -29,19 +40,30 @@ export default function EscalatePage() {
 
   useEffect(() => {
     const uanParam = new URLSearchParams(window.location.search).get('uan');
-    if (uanParam && /^\d{9}$/.test(uanParam)) {
+    if (uanParam && isValidUan(uanParam)) {
       setUan(uanParam);
     }
   }, []);
 
   const handleGenerate = async () => {
-    if (!uan.trim()) return;
+    const trimmed = uan.trim();
+    if (!trimmed) return;
+
+    if (!isValidUan(trimmed)) {
+      toast({
+        title: t('error_claim_not_found'),
+        description: t('check_uan_invalid'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
     await new Promise(r => setTimeout(r, 1000));
 
-    const found = getClaimByUAN(uan);
+    const found = getClaimByUAN(trimmed);
     if (!found) {
-      toast({ title: 'UAN not found', description: 'Try demo UANs: 123456789, 987654321', variant: 'destructive' });
+      toast({ title: t('error_claim_not_found'), description: `${t('error_sample_uans')}: ${formatDemoUanList(2)}`, variant: 'destructive' });
       setLoading(false);
       return;
     }
@@ -60,102 +82,107 @@ export default function EscalatePage() {
   const handleCopy = () => {
     if (!activeDoc) return;
     navigator.clipboard.writeText(activeDoc.content);
-    toast({ title: 'Document copied!', description: `Paste this in the ${activeDoc.portalName} form.` });
+    toast({ title: t('escalate_doc_copied'), description: activeDoc.portalName });
   };
 
   return (
     <GovPageShell breadcrumbs={[{ label: t('nav_escalate') }]}>
       <div className="container mx-auto px-4 py-10 max-w-3xl">
-        {/* Page Title */}
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-            <Scale className="w-7 h-7 text-red-600" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#1a237e] mb-2">{t('tool_legal_title')}</h1>
-          <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            {t('tool_legal_desc')}
-          </p>
-        </div>
+        <ToolPageHeader
+          icon={Scale}
+          title={t('tool_legal_title')}
+          description={t('tool_legal_desc')}
+          accent="red"
+        />
 
-        {/* Input */}
         {!claim && (
-          <Card className="gov-card border-gray-200 mb-6">
+          <Card className="gov-card-elevated mb-6">
             <CardHeader>
               <CardTitle className="text-lg text-[#1a237e]">{t('uan_label')}</CardTitle>
-              <CardDescription>We will generate all escalation documents pre-filled with your claim data.</CardDescription>
+              <CardDescription>{t('escalate_prefill_desc')}</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="flex gap-3">
-                <input
+            <CardContent className="space-y-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <GovInput
                   type="text"
+                  inputMode="numeric"
+                  maxLength={DEMO_UAN_LENGTH}
                   value={uan}
-                  onChange={(e) => setUan(e.target.value)}
+                  onChange={(e) => setUan(e.target.value.replace(/\D/g, '').slice(0, DEMO_UAN_LENGTH))}
                   onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
                   placeholder={t('uan_placeholder')}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-epfo-indigo/50 focus:border-epfo-indigo transition-colors"
+                  icon={Search}
+                  error={uan.length > 0 && !isValidUan(uan)}
+                  disabled={loading}
                 />
-                <Button onClick={handleGenerate} disabled={loading} className="gap-2 bg-epfo-indigo hover:bg-epfo-navy text-white btn-press px-6">
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Scale className="w-4 h-4" />}
-                  Generate
+                <Button
+                  variant="gov"
+                  onClick={handleGenerate}
+                  disabled={loading || !isValidUan(uan)}
+                  className="shrink-0 px-6"
+                >
+                  <Scale className="w-4 h-4" />
+                  {loading ? t('escalate_generating') : t('escalate_generate')}
                 </Button>
               </div>
-              <div className="mt-4 flex gap-2">
-                <span className="text-xs text-muted-foreground">{t('demo_uans')}</span>
-                {['123456789', '987654321'].map(d => (
-                  <button key={d} onClick={() => setUan(d)} className="text-xs px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg hover:border-epfo-indigo transition-all font-mono">
-                    {d}
-                  </button>
-                ))}
-              </div>
+              {uan.length > 0 && !isValidUan(uan) && (
+                <p className="text-xs text-amber-700" role="status">
+                  {t('check_uan_invalid')}
+                </p>
+              )}
+              <DemoUanList
+                title={t('demo_uans')}
+                variant="indigo"
+                disabled={loading}
+                items={[
+                  { uan: DEMO_UAN_EMPLOYER, label: t('escalate_scenario_employer'), onClick: () => setUan(DEMO_UAN_EMPLOYER) },
+                  { uan: DEMO_UAN_KYC, label: t('escalate_scenario_kyc'), onClick: () => setUan(DEMO_UAN_KYC) },
+                ]}
+              />
             </CardContent>
           </Card>
         )}
 
-        {loading && (
-          <div className="text-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-epfo-indigo mx-auto mb-3" />
-            <p className="text-muted-foreground text-sm">Generating legal documents...</p>
-          </div>
-        )}
+        {loading && <PageLoading message={t('escalate_generating')} />}
 
-        {/* Documents Generated */}
         {claim && documents.length > 0 && (
           <div className="space-y-5">
-            {/* Warning */}
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-amber-600" />
+              </div>
               <div className="text-sm">
-                <p className="font-medium text-amber-900">When to escalate</p>
-                <p className="text-amber-700">
-                  EPFO recommends waiting at least 10 days before filing a grievance. Your claim has been pending for this period, so escalation is appropriate.
+                <p className="font-semibold text-amber-900">{t('escalate_when_title')}</p>
+                <p className="text-amber-700 mt-0.5">
+                  {t('escalate_when_desc')}
                 </p>
               </div>
             </div>
 
-            {/* Document Tabs */}
             <div className="flex gap-2 overflow-x-auto pb-1">
               {documents.map(doc => (
                 <button
                   key={doc.type}
+                  type="button"
                   onClick={() => setActiveDoc(doc)}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all btn-press ${
-                    activeDoc?.type === doc.type
-                      ? 'bg-epfo-indigo text-white shadow-sm'
-                      : 'bg-white text-gray-700 border border-gray-200 hover:border-epfo-indigo/50'
-                  }`}
+                  className={cn(
+                    'tab-pill',
+                    activeDoc?.type === doc.type ? 'tab-pill-active' : 'tab-pill-inactive',
+                  )}
                 >
                   {doc.title}
                 </button>
               ))}
             </div>
 
-            {/* Active Document */}
             {activeDoc && (
-              <Card className="gov-card border-gray-200">
+              <Card className="gov-card-elevated">
                 <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-3">
                     <CardTitle className="text-lg text-[#1a237e] flex items-center gap-2">
-                      <FileText className="w-4 h-4" />
+                      <span className="w-8 h-8 rounded-lg bg-epfo-indigo/10 flex items-center justify-center">
+                        <FileText className="w-4 h-4 text-epfo-indigo" />
+                      </span>
                       {activeDoc.title}
                     </CardTitle>
                     {activeDoc.fee && (
@@ -167,19 +194,19 @@ export default function EscalatePage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="bg-gray-50 border rounded-lg p-4 max-h-96 overflow-y-auto">
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 max-h-96 overflow-y-auto">
                     <pre className="whitespace-pre-wrap font-sans text-xs leading-relaxed">
                       {activeDoc.content}
                     </pre>
                   </div>
 
-                  <div className="flex gap-3">
-                    <Button onClick={handleCopy} className="gap-2 bg-epfo-indigo hover:bg-epfo-navy text-white btn-press">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button variant="gov" onClick={handleCopy} className="gap-2">
                       <Copy className="w-4 h-4" />
-                      Copy Document
+                      {t('escalate_copy_doc')}
                     </Button>
                     <a href={activeDoc.portalUrl} target="_blank" rel="noopener noreferrer">
-                      <Button variant="outline" className="gap-2 btn-press">
+                      <Button variant="outline" className="gap-2 w-full sm:w-auto">
                         <ExternalLink className="w-4 h-4" />
                         Open {activeDoc.type === 'epfigms' ? 'EPFiGMS' : activeDoc.type === 'rti' ? 'RTI Portal' : 'CPGRAMS'}
                       </Button>
@@ -190,9 +217,9 @@ export default function EscalatePage() {
             )}
 
             <div className="flex items-center justify-center gap-3 pt-2">
-              <Button variant="outline" onClick={() => { setClaim(null); setDocuments([]); setActiveDoc(null); }} className="btn-press">
-                <Search className="w-4 h-4 mr-2" />
-                Check Another Claim
+              <Button variant="outline" onClick={() => { setClaim(null); setDocuments([]); setActiveDoc(null); }}>
+                <Search className="w-4 h-4" />
+                {t('check_another_claim')}
               </Button>
             </div>
           </div>

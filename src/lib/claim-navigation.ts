@@ -1,6 +1,12 @@
 import type { ClaimStatus } from '@/types/claim';
 import { STAGE_ORDER } from '@/types/claim';
 import { calculateClaimHealth } from '@/lib/services/claim-health-score';
+import {
+  DEMO_UAN_EMPLOYER,
+  DEMO_UAN_KYC,
+  DEMO_UAN_PROCESSING,
+  DEMO_UAN_SETTLED,
+} from '@/lib/claim-session';
 
 export type ClaimTabSlug =
   | 'timeline'
@@ -25,9 +31,7 @@ export function isClaimBlocked(claim: ClaimStatus): boolean {
   return claim.stages[claim.currentStage].status === 'blocked';
 }
 
-export function getDefaultTab(claim: ClaimStatus): ClaimTabSlug {
-  if (isClaimSettled(claim)) return 'alerts';
-  if (isClaimBlocked(claim)) return 'diagnosis';
+export function getDefaultTab(_claim?: ClaimStatus): ClaimTabSlug {
   return 'timeline';
 }
 
@@ -144,11 +148,10 @@ export function getContinueRoute(
 export const PROBLEM_SCENARIOS: Array<{
   id: string;
   uan: string;
-  tab: ClaimTabSlug;
   labelKey: string;
 }> = [
-  { id: 'employer', uan: '123456789', tab: 'diagnosis', labelKey: 'problem_employer' },
-  { id: 'kyc', uan: '987654321', tab: 'diagnosis', labelKey: 'problem_kyc' },
-  { id: 'processing', uan: '555555555', tab: 'timeline', labelKey: 'problem_processing' },
-  { id: 'payment', uan: '555555555', tab: 'timeline', labelKey: 'problem_payment' },
+  { id: 'employer', uan: DEMO_UAN_EMPLOYER, labelKey: 'problem_employer' },
+  { id: 'kyc', uan: DEMO_UAN_KYC, labelKey: 'problem_kyc' },
+  { id: 'processing', uan: DEMO_UAN_PROCESSING, labelKey: 'problem_processing' },
+  { id: 'payment', uan: DEMO_UAN_SETTLED, labelKey: 'problem_payment' },
 ];

@@ -169,7 +169,7 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
   const steps =
     diagnosis.resolutionSteps && diagnosis.resolutionSteps.length > 0
       ? diagnosis.resolutionSteps.map((s, i) => ({
-          title: `Step ${i + 1}`,
+          title: t('diagnosis_step_label').replace('{n}', String(i + 1)),
           description: s,
           links: [] as Array<{ label: string; url: string }>,
         }))

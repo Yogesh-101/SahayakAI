@@ -14,7 +14,7 @@ export default function MobileNav() {
     { href: '/claim/check', label: t('cta_check_status'), icon: Search },
     { href: '/tools/kyc-check', label: t('nav_kyc_check'), icon: ShieldCheck },
     { href: '/tools/escalate', label: t('nav_escalate'), icon: Scale },
-    { href: '/demo', label: 'Demo', icon: Play },
+    { href: '/demo', label: t('nav_tour'), icon: Play },
   ];
 
   return (

@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Search,
@@ -12,10 +11,8 @@ import {
 } from 'lucide-react';
 import { useClaim } from '@/contexts/ClaimContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import {
-  getTabBadges,
-  type ClaimTabSlug,
-} from '@/lib/claim-navigation';
+import { getTabBadges, type ClaimTabSlug } from '@/lib/claim-navigation';
+import ClaimNavTab from '@/components/claim/ClaimNavTab';
 
 type TabDef = {
   slug: ClaimTabSlug;
@@ -42,37 +39,23 @@ export default function ClaimTabNav() {
 
   return (
     <nav
-      className="sticky top-[3.5rem] z-40 -mx-4 px-4 py-3 bg-white/95 backdrop-blur border-b border-gray-100 hidden md:block"
+      className="sticky top-14 z-40 -mx-4 px-4 py-2.5 bg-white/95 backdrop-blur border-b border-slate-100 hidden md:block"
       aria-label={t('claim_tabs_label')}
     >
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center sm:justify-start max-w-3xl mx-auto">
+      <div className="claim-nav-bar max-w-3xl mx-auto">
         {visibleTabs.map((tab) => {
           const href = `${base}/${tab.slug}`;
           const isActive = pathname === href || pathname.endsWith(`/${tab.slug}`);
-          const badge = badges[tab.slug];
 
           return (
-            <Link
+            <ClaimNavTab
               key={tab.slug}
               href={href}
-              className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all min-h-[44px] ${
-                isActive
-                  ? 'bg-[#1a237e] text-white shadow-md'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              <tab.icon className="w-4 h-4" />
-              {t(tab.labelKey)}
-              {badge && (
-                <span
-                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-red-100 text-red-700'
-                  }`}
-                >
-                  {badge}
-                </span>
-              )}
-            </Link>
+              label={t(tab.labelKey)}
+              icon={tab.icon}
+              isActive={isActive}
+              showDot={!!badges[tab.slug]}
+            />
           );
         })}
       </div>

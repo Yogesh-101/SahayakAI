@@ -1,15 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SahayakAI - Hackathon EPFO Claims Prototype",
+  title: "SahayakAI - EPFO Claims Transparency",
   description:
-    "Hackathon prototype for Build What Moves India. Mock EPFO claim tracking with AI diagnosis — not affiliated with EPFO or Government of India.",
+    "Track EPFO PF claims with stage-by-stage visibility, AI diagnosis, and resolution guidance. Hackathon build for Build What Moves India.",
   keywords: [
     "EPFO",
     "PF claim",
@@ -24,9 +25,9 @@ export const metadata: Metadata = {
     apple: "/logo.svg",
   },
   openGraph: {
-    title: "SahayakAI - Hackathon EPFO Claims Prototype",
+    title: "SahayakAI - EPFO Claims Transparency",
     description:
-      "Hackathon prototype with mock data. Not an official government product.",
+      "AI-powered EPFO claim tracking and diagnosis. Not an official government product.",
     type: "website",
     locale: "en_IN",
   },
@@ -36,7 +37,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#3B3F8C",
+  themeColor: "#1a237e",
 };
 
 export default function RootLayout({
@@ -48,7 +49,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
         <LanguageProvider>
-          {children}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
           <Toaster />
         </LanguageProvider>
       </body>

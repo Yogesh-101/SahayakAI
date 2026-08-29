@@ -60,6 +60,7 @@ export default function WhatsAppPreview({ claim, hideHeader = false }: WhatsAppP
             type="button"
             role="switch"
             aria-checked={alertsEnabled}
+            aria-label={t('alerts_toggle_aria')}
             onClick={() => setAlertsEnabled(!alertsEnabled)}
             className={`relative w-11 h-6 rounded-full transition-colors min-w-[44px] ${
               alertsEnabled ? 'bg-epfo-indigo' : 'bg-gray-300'
@@ -95,16 +96,14 @@ export default function WhatsAppPreview({ claim, hideHeader = false }: WhatsAppP
               onClick={() => setExpanded(true)}
               className="w-full text-center text-xs text-muted-foreground hover:text-foreground py-2"
             >
-              + {notifications.length - 3} older messages
+              {t('whatsapp_older_messages').replace('{count}', String(notifications.length - 3))}
             </button>
           )}
         </div>
 
         <div className="mt-4 text-xs text-muted-foreground space-y-1">
           <p>{t('alerts_enabled_note')}</p>
-          <p>{t('whatsapp_integration_note')}</p>
           <p>{t('whatsapp_benefit')}</p>
-          <p>{t('alerts_sms_fallback')}</p>
         </div>
       </CardContent>
     </Card>
@@ -160,7 +159,7 @@ function generateNotifications(claim: ClaimStatus): NotificationEvent[] {
   // Filing notification
   events.push({
     type: 'status_change',
-    message: `Your EPFO claim (₹${claim.amount.toLocaleString('en-IN')}) has been filed successfully. Track it here: sahayak.ai/claim/${claim.uan}`,
+    message: `Your EPFO claim (₹${claim.amount.toLocaleString('en-IN')}) has been filed successfully. Track it here: /claim/${claim.uan}`,
     timestamp: claim.filingDate,
   });
 

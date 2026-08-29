@@ -9,15 +9,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
 import ClaimOverviewCard from '@/components/claim/ClaimOverviewCard';
 import ClaimTabNav from '@/components/claim/ClaimTabNav';
-import ClaimStepper from '@/components/claim/ClaimStepper';
 import ClaimBottomNav from '@/components/claim/ClaimBottomNav';
 import ClaimContinueButton from '@/components/claim/ClaimContinueButton';
 import NextStepCard from '@/components/claim/NextStepCard';
 import EpfoCallFab from '@/components/claim/EpfoCallFab';
-import PrototypeBadge from '@/components/PrototypeBadge';
 import GovPageShell from '@/components/GovPageShell';
 import { ClaimProvider, useClaim } from '@/contexts/ClaimContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { scrollToClaimSection } from '@/lib/claim-scroll';
 
 const HASH_TO_ROUTE: Record<string, string> = {
   timeline: 'timeline',
@@ -39,11 +38,7 @@ function ClaimLayoutInner({ children }: { children: ReactNode }) {
   const isTimeline = pathname.endsWith('/timeline');
 
   useEffect(() => {
-    const el = contentRef.current;
-    if (!el) return;
-    requestAnimationFrame(() => {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    scrollToClaimSection(contentRef.current);
   }, [pathname]);
 
   if (loading) {
@@ -81,7 +76,7 @@ function ClaimLayoutInner({ children }: { children: ReactNode }) {
               <p className="font-medium text-lg">{t('error_claim_not_found')}</p>
               <p className="text-sm text-muted-foreground">{error}</p>
               <Link href="/claim/check">
-                <Button className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press">
+                <Button variant="gov" className="gap-2">
                   {t('error_try_another_uan')}
                 </Button>
               </Link>
@@ -100,22 +95,14 @@ function ClaimLayoutInner({ children }: { children: ReactNode }) {
       ]}
     >
       <div className="container mx-auto px-4 py-6 pb-24 md:pb-16 max-w-4xl space-y-4">
-        <div className="flex items-center justify-between gap-2">
-          <PrototypeBadge />
-          <p className="text-[10px] text-muted-foreground text-right hidden sm:block">
-            {t('check_no_real_epfo')}
-          </p>
-        </div>
-
         <ClaimOverviewCard compact={!isTimeline} />
         <NextStepCard />
-        <ClaimStepper />
         <ClaimTabNav />
 
         <div
           id="claim-section"
           ref={contentRef}
-          className="scroll-mt-[8.75rem] pt-2 pb-4"
+          className="scroll-mt-40 md:scroll-mt-44 pt-1 pb-4"
         >
           {children}
           <ClaimContinueButton />

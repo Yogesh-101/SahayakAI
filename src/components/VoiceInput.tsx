@@ -11,6 +11,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { DEMO_UANS } from '@/lib/claim-session';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface VoiceInputProps {
   onTranscript: (text: string) => void;
@@ -21,6 +23,7 @@ export default function VoiceInput({
   onTranscript,
   placeholder = 'Tap to speak',
 }: VoiceInputProps) {
+  const { t } = useLanguage();
   const [isListening, setIsListening] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -33,10 +36,8 @@ export default function VoiceInput({
     // Mock speech recognition (in production, this would use BHASHINI API)
     setTimeout(() => {
       const mockTranscripts = [
-        '123456789',
-        '987654321',
-        '555555555',
-        'मेरा UAN नंबर एक दो तीन चार पांच छह सात आठ नौ है',
+        ...DEMO_UANS.slice(0, 3),
+        'मेरा UAN नंबर एक दो तीन चार पांच छह सात आठ नौ शून्य एक दो है',
       ];
       const randomTranscript =
         mockTranscripts[Math.floor(Math.random() * mockTranscripts.length)];
@@ -47,7 +48,7 @@ export default function VoiceInput({
       setTimeout(() => {
         setShowModal(false);
         // Extract numbers if Hindi transcription
-        const extractedUAN = randomTranscript.match(/\d{9}/)?.[0] || randomTranscript;
+        const extractedUAN = randomTranscript.match(/\d{12}/)?.[0] || randomTranscript;
         onTranscript(extractedUAN);
       }, 1000);
     }, 2000);
@@ -65,7 +66,7 @@ export default function VoiceInput({
         variant="outline"
         size="icon"
         onClick={startListening}
-        className="shrink-0"
+        className="shrink-0 border-2"
         aria-label="Voice input"
       >
         <Mic className="w-4 h-4" />
@@ -74,15 +75,13 @@ export default function VoiceInput({
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              Voice Input (Mock Preview)
+            <DialogTitle className="flex items-center justify-between gap-2">
+              {t('voice_input_title')}
               <Badge variant="outline" className="text-xs bg-amber-50 text-amber-800 border-amber-300">
-                Mock Preview
+                {t('mock_preview_badge')}
               </Badge>
             </DialogTitle>
-            <DialogDescription>
-              Simulated BHASHINI voice input — Hindi or English demo only
-            </DialogDescription>
+            <DialogDescription>{t('voice_input_desc')}</DialogDescription>
           </DialogHeader>
 
           <div className="flex flex-col items-center justify-center py-8 space-y-4">
@@ -97,7 +96,7 @@ export default function VoiceInput({
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground animate-pulse">
-                  Listening...
+                  {t('voice_listening')}
                 </p>
               </>
             ) : (
@@ -107,7 +106,7 @@ export default function VoiceInput({
                 </div>
                 {transcript && (
                   <div className="text-center space-y-2">
-                    <p className="text-sm text-muted-foreground">Transcribed:</p>
+                    <p className="text-sm text-muted-foreground">{t('voice_transcribed')}</p>
                     <p className="font-medium text-lg">{transcript}</p>
                   </div>
                 )}
@@ -115,11 +114,8 @@ export default function VoiceInput({
             )}
           </div>
 
-          <div className="text-xs text-muted-foreground space-y-1 border-t pt-4">
-            <p>
-              <strong>Mock preview only.</strong> In production this would use BHASHINI for speech recognition.
-            </p>
-            <p>Today: Hindi and English UI. Additional languages planned via BHASHINI.</p>
+          <div className="text-xs text-muted-foreground border-t pt-4">
+            <p>{t('voice_input_note')}</p>
           </div>
 
           <Button

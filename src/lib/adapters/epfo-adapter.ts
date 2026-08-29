@@ -1,5 +1,6 @@
 import type { ClaimStatus } from '@/types/claim';
 import { parseClaimStatus } from '@/lib/claim-parser';
+import { formatDemoUanList } from '@/lib/claim-session';
 
 /**
  * EPFO claim status adapter.
@@ -32,7 +33,7 @@ export async function fetchClaimStatus(
   if (!response.ok) {
     throw new Error(
       payload.error ??
-        `Claim not found for UAN ${uan}. Try one of the demo UANs: 123456789, 987654321, 555555555, 111111111`,
+        `Claim not found for UAN ${uan}. ${formatDemoUanList()}`,
     );
   }
 

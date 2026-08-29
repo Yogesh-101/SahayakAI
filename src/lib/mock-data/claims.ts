@@ -13,7 +13,7 @@ function daysAgo(n: number): Date {
 
 // ─── Scenario A: Employer Blocker ───────────────────────────────────────────
 const claimA: ClaimStatus = {
-  uan: '123456789',
+  uan: '123456789012',
   claimId: 'CLM-2026-A78912',
   claimType: 'withdrawal',
   amount: 250000,
@@ -44,7 +44,7 @@ const claimA: ClaimStatus = {
 
 // ─── Scenario B: KYC Mismatch ───────────────────────────────────────────────
 const claimB: ClaimStatus = {
-  uan: '987654321',
+  uan: '987654321098',
   claimId: 'CLM-2026-B45623',
   claimType: 'withdrawal',
   amount: 180000,
@@ -77,7 +77,7 @@ const claimB: ClaimStatus = {
 
 // ─── Scenario C: Normal Processing ──────────────────────────────────────────
 const claimC: ClaimStatus = {
-  uan: '555555555',
+  uan: '555555555555',
   claimId: 'CLM-2026-C99102',
   claimType: 'loan',
   amount: 500000,
@@ -110,7 +110,7 @@ const claimC: ClaimStatus = {
 
 // ─── Scenario D: Settled Successfully ───────────────────────────────────────
 const claimD: ClaimStatus = {
-  uan: '111111111',
+  uan: '111111111111',
   claimId: 'CLM-2026-D33210',
   claimType: 'pension',
   amount: 320000,
@@ -145,10 +145,10 @@ const claimD: ClaimStatus = {
 
 /** All demo claims indexed by UAN. */
 const CLAIMS_DB: Record<string, ClaimStatus> = {
-  '123456789': claimA,
-  '987654321': claimB,
-  '555555555': claimC,
-  '111111111': claimD,
+  '123456789012': claimA,
+  '987654321098': claimB,
+  '555555555555': claimC,
+  '111111111111': claimD,
 };
 
 /** Look up a claim by UAN. Returns null when not found. */

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getClaimByUAN } from '@/lib/mock-data/claims';
+import { formatDemoUanList } from '@/lib/claim-session';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -16,7 +17,7 @@ export async function GET(request: Request) {
   if (!claim) {
     return NextResponse.json(
       {
-        error: `Claim not found for UAN ${uan}. Try demo UANs: 123456789, 987654321, 555555555, 111111111`,
+        error: `Claim not found for UAN ${uan}. Sample UANs: ${formatDemoUanList()}`,
       },
       { status: 404 },
     );

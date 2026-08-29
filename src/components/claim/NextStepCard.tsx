@@ -47,11 +47,8 @@ export default function NextStepCard() {
           </div>
           <Link href={next.href} className="shrink-0 w-full sm:w-auto">
             <Button
-              className={`w-full sm:w-auto gap-2 min-h-[44px] btn-press ${
-                next.urgent
-                  ? 'bg-red-600 hover:bg-red-700 text-white'
-                  : 'bg-epfo-indigo hover:bg-epfo-navy text-white'
-              }`}
+              variant={next.urgent ? 'destructive' : 'gov'}
+              className="w-full sm:w-auto gap-2"
             >
               {next.ctaLabel}
               <ArrowRight className="w-4 h-4" />

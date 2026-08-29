@@ -67,7 +67,7 @@ export default function PeerComparison({ claim }: PeerComparisonProps) {
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-primary" />
-          How Your Claim Compares
+          {t('peer_comparison_title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -95,11 +95,15 @@ export default function PeerComparison({ claim }: PeerComparisonProps) {
           <p className="text-sm text-center">
             {isSlower ? (
               <span className="text-red-700">
-                Your claim ({daysInProcess} days) is <strong>slower than {peerData.percentileFaster}%</strong> of similar claims
+                {t('peer_slower_than_avg')
+                  .replace('{days}', String(daysInProcess))
+                  .replace('{avg}', String(peerData.averageDays))}
               </span>
             ) : (
               <span className="text-green-700">
-                Your claim ({daysInProcess} days) is <strong>faster than {100 - peerData.percentileFaster}%</strong> of similar claims
+                {t('peer_faster_than_avg')
+                  .replace('{days}', String(daysInProcess))
+                  .replace('{avg}', String(peerData.averageDays))}
               </span>
             )}
           </p>

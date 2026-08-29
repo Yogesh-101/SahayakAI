@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Search,
@@ -13,6 +12,7 @@ import {
 import { useClaim } from '@/contexts/ClaimContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getTabBadges, type ClaimTabSlug } from '@/lib/claim-navigation';
+import ClaimNavTab from '@/components/claim/ClaimNavTab';
 
 const TABS: Array<{
   slug: ClaimTabSlug;
@@ -37,33 +37,24 @@ export default function ClaimBottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 safe-area-pb"
+      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-t border-slate-200 safe-area-pb shadow-[0_-4px_20px_rgba(0,0,0,0.06)]"
       aria-label={t('claim_tabs_label')}
     >
       <div className="flex justify-around items-stretch max-w-lg mx-auto">
         {visibleTabs.map((tab) => {
           const href = `${base}/${tab.slug}`;
           const isActive = pathname.endsWith(`/${tab.slug}`);
-          const badge = badges[tab.slug];
 
           return (
-            <Link
+            <ClaimNavTab
               key={tab.slug}
               href={href}
-              className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-2 px-1 min-h-[56px] text-[10px] font-medium transition-colors ${
-                isActive ? 'text-[#1a237e]' : 'text-gray-500'
-              }`}
-            >
-              <span className="relative">
-                <tab.icon className={`w-5 h-5 ${isActive ? 'text-[#1a237e]' : ''}`} />
-                {badge && (
-                  <span className="absolute -top-1 -right-2 text-[8px] font-bold bg-red-500 text-white rounded-full w-3.5 h-3.5 flex items-center justify-center">
-                    {badge.length > 1 ? '!' : badge}
-                  </span>
-                )}
-              </span>
-              <span>{t(tab.labelKey)}</span>
-            </Link>
+              label={t(tab.labelKey)}
+              icon={tab.icon}
+              isActive={isActive}
+              showDot={!!badges[tab.slug]}
+              layout="vertical"
+            />
           );
         })}
       </div>

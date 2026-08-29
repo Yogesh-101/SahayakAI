@@ -26,16 +26,17 @@ This project follows the Build What Moves India rules:
 ### Citizen journey (end-to-end)
 
 1. **Home** → Choose Track / Fix / Escalate, or enter UAN at `/claim/check`
-2. **Check** → UAN validation, problem picker, one-tap demo UANs, welcome-back shortcut
-3. **Dashboard** → Smart default tab (blocked → Fix, settled → Alerts), Next Step card, journey stepper
-4. **Fix** → AI diagnosis, expanded resolution checklist, read-aloud, escalate CTA
-5. **Compare** → Peer stats + daily financial loss (₹/day highlighted)
-6. **Rights** → Priority right card + contextual legal guidance
-7. **Alerts** → WhatsApp mock preview with enable toggle
+2. **Check** → 12-digit UAN validation, problem picker, welcome-back shortcut, voice input
+3. **Dashboard** → Always opens on **Status** tab (`/claim/[uan]/timeline`); segmented tabs (Status · Fix · Compare · Rights · Alerts)
+4. **Next Step card** → Guides to Fix, Compare, Rights, or Alerts based on claim state
+5. **Fix** → AI diagnosis, resolution checklist, read-aloud, escalate CTA
+6. **Compare** → Peer stats + daily financial loss (₹/day highlighted)
+7. **Rights** → Priority right card + contextual legal guidance (settled claims show friendly empty state)
+8. **Alerts** → WhatsApp mock preview with enable toggle
 
-**Mobile:** Hamburger menu, bottom tab bar on claim pages, 44px+ tap targets, Call EPFO FAB on blocked claims.
+**Mobile:** Hamburger menu, bottom tab bar on claim pages, 44px+ tap targets, Call EPFO FAB on blocked claims, scroll-to-top offset above bottom nav.
 
-**Honesty:** Persistent "Demo · Mock Data" badge; no real EPFO access disclosed on check and claim pages.
+**Honesty:** Subtle "Sample data" badge in breadcrumb bar; footer disclaimer; no live EPFO access.
 
 ---
 
@@ -218,10 +219,10 @@ The interactive demo guides you through:
 
 | UAN | Scenario |
 |-----|----------|
-| `123456789` | **Employer Block** — Claim stuck at employer approval for 15 days |
-| `987654321` | **KYC Mismatch** — Aadhaar/PAN doesn't match EPFO records |
-| `555555555` | **Normal Processing** — Claim progressing smoothly |
-| `111111111` | **Settled** — Successfully credited to bank account |
+| `123456789012` | **Employer Block** — Claim stuck at employer approval for 15 days |
+| `987654321098` | **KYC Mismatch** — Aadhaar/PAN doesn't match EPFO records |
+| `555555555555` | **Normal Processing** — Claim progressing smoothly |
+| `111111111111` | **Settled** — Successfully credited to bank account |
 
 ---
 
@@ -229,12 +230,16 @@ The interactive demo guides you through:
 
 | Route | Description |
 |-------|-------------|
-| `/` | Homepage — centered hero, features, tools, mock India Stack previews, CTA |
-| `/claim/check` | UAN input form with voice input and demo UAN shortcuts |
-| `/claim/[id]` | Claim dashboard — timeline, AI diagnosis, analytics, rights, WhatsApp |
-| `/tools/kyc-check` | Pre-filing KYC Health Checker (standalone tool) |
-| `/tools/escalate` | One-Click Legal Escalation — EPFiGMS, RTI, CPGRAMS |
-| `/demo` | Interactive guided demo for judges |
+| `/` | Homepage — hero, features, tools, India Stack previews, CTA |
+| `/claim/check` | UAN input, voice input, welcome-back chip, demo UAN shortcuts |
+| `/claim/[uan]/timeline` | **Status** — stage timeline, health score, next-step card |
+| `/claim/[uan]/diagnosis` | **Fix** — AI diagnosis & resolution checklist |
+| `/claim/[uan]/analytics` | **Compare** — peer comparison & financial impact |
+| `/claim/[uan]/rights` | **Rights** — legal guidance & escalation links |
+| `/claim/[uan]/alerts` | **Alerts** — WhatsApp notification preview |
+| `/tools/kyc-check` | Pre-filing KYC Health Checker (standalone) |
+| `/tools/escalate` | Legal Escalation — EPFiGMS, RTI, CPGRAMS |
+| `/demo` | 9-step guided tour for judges (Explore mode default) |
 | `/api/claim/status` | GET — claim lookup via EPFO adapter |
 | `/api/claim/diagnose` | POST — server-side AI diagnosis |
 
@@ -350,10 +355,10 @@ This allows:
 
 ### Multilingual Support
 
-**Current:** English + Hindi
+**Current:** English + Hindi (full UI on homepage, claim dashboard, tools, guided tour, error/404/loading pages)
 - UI translations in `src/contexts/LanguageContext.tsx`
-- Toggle in header
-- Stage labels, status messages, errors
+- `document.documentElement.lang` syncs with language toggle
+- Stage labels, status badges, KYC results, demo tour steps
 
 **Production:** Add 20+ languages via BHASHINI translation API
 
@@ -483,18 +488,22 @@ npm run lint      # Run ESLint
 |------|--------|
 | Production build (`npm run build`) | ✅ Passes |
 | All 11 features implemented | ✅ Complete |
-| 4 demo UAN scenarios | ✅ Working |
-| Hindi/English i18n | ✅ Homepage + inner pages |
+| 4 demo UAN scenarios (12-digit) | ✅ Working |
+| Hindi/English i18n (incl. demo, timeline, KYC, errors) | ✅ Complete |
+| Status-first navigation (`/timeline` default) | ✅ Complete |
 | EPFO-inspired UI (no official gov branding) | ✅ Complete |
+| Error / 404 / loading states | ✅ Complete |
 | Live deployment (Vercel) | ✅ [sahayak-ai-brown.vercel.app](https://sahayak-ai-brown.vercel.app) |
 | API routes (`/api/claim/status`, `/api/claim/diagnose`) | ✅ Working |
-| README.md | ✅ Updated |
-| ARCHITECTURE.md | ✅ Updated |
+| README.md + DEMO_SCRIPT.md | ✅ Updated |
+| ARCHITECTURE.md | ✅ Included |
 | `.env.example` | ✅ Included |
 
-**Demo UANs:** `123456789` (blocked) · `987654321` (KYC) · `555555555` (processing) · `111111111` (settled)
+**Demo UANs (12-digit):** `123456789012` (employer block) · `987654321098` (KYC) · `555555555555` (processing) · `111111111111` (settled)
 
-**Judge entry point:** [https://sahayak-ai-brown.vercel.app/demo](https://sahayak-ai-brown.vercel.app/demo)
+**Judge entry points:**
+- Guided tour: [sahayak-ai-brown.vercel.app/demo](https://sahayak-ai-brown.vercel.app/demo)
+- Direct check: [sahayak-ai-brown.vercel.app/claim/check](https://sahayak-ai-brown.vercel.app/claim/check)
 
 ---
 

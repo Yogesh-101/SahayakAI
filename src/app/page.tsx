@@ -36,7 +36,7 @@ import { Badge } from '@/components/ui/badge';
 import LanguageToggle from '@/components/LanguageToggle';
 import MobileNav from '@/components/MobileNav';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getLastUan } from '@/lib/claim-session';
+import { getLastUan, DEMO_UAN_EMPLOYER } from '@/lib/claim-session';
 
 export default function Home() {
   const { t } = useLanguage();
@@ -73,7 +73,7 @@ export default function Home() {
     { icon: MessageCircle, title: t('feature_whatsapp_title'), description: t('feature_whatsapp_desc') },
   ];
 
-  const demoUan = lastUan ?? '123456789';
+  const demoUan = lastUan ?? DEMO_UAN_EMPLOYER;
   const hasUan = !!lastUan;
 
   const ENTRY_POINTS = [
@@ -115,7 +115,7 @@ export default function Home() {
               {[
                 { href: '/tools/kyc-check', label: t('nav_kyc_check') },
                 { href: '/tools/escalate', label: t('nav_escalate') },
-                { href: '/demo', label: 'Demo' },
+                { href: '/demo', label: t('nav_tour') },
               ].map((link) => (
                 <Link key={link.href} href={link.href} className="relative h-full flex items-center px-3.5 text-[13px] font-medium text-gray-600 hover:text-epfo-indigo transition-colors after:absolute after:bottom-0 after:left-3.5 after:right-3.5 after:h-0.5 after:bg-epfo-indigo after:scale-x-0 hover:after:scale-x-100 after:transition-transform">
                   {link.label}
@@ -126,7 +126,7 @@ export default function Home() {
               <MobileNav />
               <LanguageToggle />
               <Link href="/claim/check">
-                <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-9 px-3 sm:px-4 text-xs min-h-[44px]">
+                <Button size="sm" variant="gov" className="h-9 px-3 sm:px-4 text-xs">
                   {t('cta_check_status')}
                 </Button>
               </Link>
@@ -146,19 +146,6 @@ export default function Home() {
               {t('ticker_text')}
             </p>
           </div>
-        </div>
-      </div>
-
-      {/* ── Judge entry banner ───────────────────────── */}
-      <div className="bg-[#1a237e] text-white">
-        <div className="container mx-auto px-4 py-2 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center sm:text-left">
-          <p className="text-xs sm:text-sm font-medium">{t('judge_banner_text')}</p>
-          <Link href="/demo">
-            <Button size="sm" variant="secondary" className="h-7 text-xs bg-white text-[#1a237e] hover:bg-gray-100">
-              {t('judge_banner_cta')}
-              <ArrowRight className="w-3.5 h-3.5 ml-1" />
-            </Button>
-          </Link>
         </div>
       </div>
 
@@ -208,26 +195,17 @@ export default function Home() {
             </p>
 
             <div
-              className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-up"
+              className="flex justify-center animate-fade-up"
               style={{ animationDelay: '0.3s' }}
             >
               <Link href="/claim/check">
                 <Button
                   size="lg"
-                  className="text-sm px-7 py-5 w-full sm:w-auto gap-2 bg-[#1a237e] text-white hover:bg-[#0d1559] font-semibold btn-press shadow-lg rounded-lg"
+                  variant="gov"
+                  className="text-sm px-7 py-5 w-full sm:w-auto gap-2 shadow-lg"
                 >
                   <Search className="w-4 h-4" />
                   {t('cta_track_claim')}
-                </Button>
-              </Link>
-              <Link href="/demo">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-sm px-7 py-5 w-full sm:w-auto gap-2 border-2 border-[#1a237e]/30 text-[#1a237e] hover:bg-[#1a237e]/5 btn-press rounded-lg"
-                >
-                  {t('cta_watch_demo')}
-                  <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
             </div>
