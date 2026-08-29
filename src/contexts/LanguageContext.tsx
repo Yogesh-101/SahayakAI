@@ -68,7 +68,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Homepage
     hero_title: 'Track Your EPFO Claim in Real Time',
     hero_subtitle:
-      'AI-powered insights and WhatsApp notifications for PF withdrawals, loans, and pensions',
+      'AI-powered insights and WhatsApp notifications for PF withdrawal claims',
     cta_check_status: 'Check Claim Status',
     cta_view_demo: 'View Demo',
     stat_claims_tracked: 'Claims Tracked',
@@ -140,6 +140,15 @@ const translations: Record<Language, Record<string, string>> = {
     error_try_again: 'Please try again later',
     diagnosis_rule_based: 'Rule-based demo mode',
     diagnosis_gpt_powered: 'GPT-3.5 powered',
+    diagnosis_escalate_cta: 'Escalate Legally',
+    claim_health_title: 'Claim Health Score',
+    claim_health_days_in_stage: '{days} days at current stage',
+    hero_founder_story:
+      'When I filed my PF withdrawal, the EPFO portal showed only UNDER PROCESS for weeks — with no idea which stage was stuck or what to do next.',
+    judge_banner_text: 'Judges: start the guided walkthrough',
+    judge_banner_cta: 'Open /demo',
+    stat_stage_visibility: '4-Stage Visibility',
+    stat_ai_diagnosis: 'AI + Rule-Based',
     prototype_banner:
       'Hackathon prototype for Build What Moves India — not affiliated with EPFO or Government of India. Mock data only.',
     ticker_label: 'DEMO',
@@ -153,7 +162,7 @@ const translations: Record<Language, Record<string, string>> = {
     hero_title_line1: 'Your EPFO Claim.',
     hero_title_line2: 'Complete Transparency.',
     hero_description:
-      'Stop checking "Under Process". Get real-time stage tracking, AI-powered diagnosis, and actionable resolution steps for your PF, pension, and loan claims.',
+      'Stop checking "Under Process". Get real-time stage tracking, AI-powered diagnosis, and actionable resolution steps for your PF withdrawal claims.',
     cta_track_claim: 'Track Your Claim',
     cta_watch_demo: 'Watch Demo',
     stat_epfo_members: 'EPFO Members',
@@ -252,7 +261,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Homepage
     hero_title: 'अपने EPFO दावे को रियल टाइम में ट्रैक करें',
     hero_subtitle:
-      'PF निकासी, ऋण और पेंशन के लिए AI-संचालित जानकारी और WhatsApp सूचनाएं',
+      'PF निकासी दावों के लिए AI-संचालित जानकारी और WhatsApp सूचनाएं',
     cta_check_status: 'दावा स्थिति जांचें',
     cta_view_demo: 'डेमो देखें',
     stat_claims_tracked: 'ट्रैक किए गए दावे',
@@ -324,6 +333,15 @@ const translations: Record<Language, Record<string, string>> = {
     error_try_again: 'कृपया बाद में पुनः प्रयास करें',
     diagnosis_rule_based: 'नियम-आधारित डेमो मोड',
     diagnosis_gpt_powered: 'GPT-3.5 संचालित',
+    diagnosis_escalate_cta: 'कानूनी शिकायत करें',
+    claim_health_title: 'दावा स्वास्थ्य स्कोर',
+    claim_health_days_in_stage: 'वर्तमान चरण में {days} दिन',
+    hero_founder_story:
+      'जब मैंने PF निकासी के लिए आवेदन किया, तो EPFO पोर्टल पर हफ्तों तक केवल प्रक्रियाधीन दिखा — पता नहीं कौन सा चरण अटका है या क्या करना है।',
+    judge_banner_text: 'न्यायाधीश: मार्गदर्शित डेमो से शुरू करें',
+    judge_banner_cta: '/demo खोलें',
+    stat_stage_visibility: '4-चरण दृश्यता',
+    stat_ai_diagnosis: 'AI + नियम-आधारित',
 
     // Homepage v2
     prototype_banner:
@@ -339,7 +357,7 @@ const translations: Record<Language, Record<string, string>> = {
     hero_title_line1: 'आपका EPFO दावा।',
     hero_title_line2: 'पूर्ण पारदर्शिता।',
     hero_description:
-      '"प्रक्रियाधीन" देखना बंद करें। अपने PF, पेंशन और ऋण दावों के लिए रियल-टाइम स्थिति ट्रैकिंग, AI-संचालित निदान और कार्रवाई योग्य समाधान चरण प्राप्त करें।',
+      '"प्रक्रियाधीन" देखना बंद करें। अपने PF निकासी दावों के लिए रियल-टाइम स्थिति ट्रैकिंग, AI-संचालित निदान और कार्रवाई योग्य समाधान चरण प्राप्त करें।',
     cta_track_claim: 'अपना दावा ट्रैक करें',
     cta_watch_demo: 'डेमो देखें',
     stat_epfo_members: 'EPFO सदस्य',

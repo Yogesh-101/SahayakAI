@@ -10,7 +10,9 @@ import {
   RefreshCw,
   Copy,
   Check,
+  Scale,
 } from 'lucide-react';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -133,6 +135,14 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
 
   const guide = getResolutionGuide(diagnosis.resolution);
   const isBlocked = claim.stages[claim.currentStage].status === 'blocked';
+  const daysInStage = Math.max(
+    0,
+    Math.floor(
+      (Date.now() - new Date(claim.stages[claim.currentStage].enteredAt).getTime()) /
+        (1000 * 60 * 60 * 24),
+    ),
+  );
+  const showEscalate = isBlocked || daysInStage >= 7;
 
   return (
     <div className="space-y-4">
@@ -196,6 +206,14 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
             >
               {showResolution ? 'Hide' : 'Show'} Resolution Steps
             </Button>
+            {showEscalate && (
+              <Link href={`/tools/escalate?uan=${claim.uan}`}>
+                <Button variant="outline" className="gap-2 sm:w-auto border-red-200 text-red-800 hover:bg-red-50">
+                  <Scale className="w-4 h-4" />
+                  {t('diagnosis_escalate_cta')}
+                </Button>
+              </Link>
+            )}
             <Button variant="outline" size="icon" onClick={runDiagnosis} aria-label="Re-run diagnosis">
               <RefreshCw className="w-4 h-4" />
             </Button>

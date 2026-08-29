@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Scale, Copy, ExternalLink, FileText, Loader2, AlertTriangle, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,13 @@ export default function EscalatePage() {
   const [documents, setDocuments] = useState<LegalDocument[]>([]);
   const [activeDoc, setActiveDoc] = useState<LegalDocument | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const uanParam = new URLSearchParams(window.location.search).get('uan');
+    if (uanParam && /^\d{9}$/.test(uanParam)) {
+      setUan(uanParam);
+    }
+  }, []);
 
   const handleGenerate = async () => {
     if (!uan.trim()) return;

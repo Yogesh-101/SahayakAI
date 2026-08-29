@@ -69,16 +69,16 @@ export default function Home() {
   const TOOLS = [
     { icon: ShieldCheck, title: t('tool_kyc_title'), description: t('tool_kyc_desc'), href: '/tools/kyc-check', color: 'text-green-600', bgColor: 'bg-green-50', borderColor: 'border-green-200' },
     { icon: Scale, title: t('tool_legal_title'), description: t('tool_legal_desc'), href: '/tools/escalate', color: 'text-red-600', bgColor: 'bg-red-50', borderColor: 'border-red-200' },
-    { icon: IndianRupee, title: t('tool_finance_title'), description: t('tool_finance_desc'), href: '/claim/123456789', color: 'text-amber-600', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
-    { icon: BarChart3, title: t('tool_peer_title'), description: t('tool_peer_desc'), href: '/claim/123456789', color: 'text-blue-600', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
-    { icon: Mail, title: t('tool_email_title'), description: t('tool_email_desc'), href: '/claim/123456789', color: 'text-purple-600', bgColor: 'bg-purple-50', borderColor: 'border-purple-200' },
-    { icon: BookOpen, title: t('tool_rights_title'), description: t('tool_rights_desc'), href: '/claim/123456789', color: 'text-indigo-600', bgColor: 'bg-indigo-50', borderColor: 'border-indigo-200' },
+    { icon: IndianRupee, title: t('tool_finance_title'), description: t('tool_finance_desc'), href: '/claim/123456789#financial-impact', color: 'text-amber-600', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
+    { icon: BarChart3, title: t('tool_peer_title'), description: t('tool_peer_desc'), href: '/claim/123456789#peer-comparison', color: 'text-blue-600', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
+    { icon: Mail, title: t('tool_email_title'), description: t('tool_email_desc'), href: '/claim/123456789#email-tracker', color: 'text-purple-600', bgColor: 'bg-purple-50', borderColor: 'border-purple-200' },
+    { icon: BookOpen, title: t('tool_rights_title'), description: t('tool_rights_desc'), href: '/claim/123456789#rights', color: 'text-indigo-600', bgColor: 'bg-indigo-50', borderColor: 'border-indigo-200' },
   ];
 
   const STATS = [
     { value: '8Cr+', label: t('stat_epfo_members') },
-    { value: '3 Days', label: t('stat_target_settlement') },
-    { value: '92%', label: t('stat_diagnosis_accuracy') },
+    { value: '4', label: t('stat_stage_visibility') },
+    { value: 'AI', label: t('stat_ai_diagnosis') },
     { value: 'EN+HI', label: t('stat_languages') },
   ];
 
@@ -132,6 +132,19 @@ export default function Home() {
         </div>
       </div>
 
+      {/* ── Judge entry banner ───────────────────────── */}
+      <div className="bg-[#1a237e] text-white">
+        <div className="container mx-auto px-4 py-2 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center sm:text-left">
+          <p className="text-xs sm:text-sm font-medium">{t('judge_banner_text')}</p>
+          <Link href="/demo">
+            <Button size="sm" variant="secondary" className="h-7 text-xs bg-white text-[#1a237e] hover:bg-gray-100">
+              {t('judge_banner_cta')}
+              <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+
       {/* ── Hero Section (centered) ─────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#f0eaf8] via-[#ebe3f5] to-white py-14 sm:py-16 lg:py-20">
         <div
@@ -164,10 +177,17 @@ export default function Home() {
             </h1>
 
             <p
-              className="text-sm sm:text-base text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-up"
+              className="text-sm sm:text-base text-gray-600 mb-4 max-w-2xl mx-auto leading-relaxed animate-fade-up"
               style={{ animationDelay: '0.2s' }}
             >
               {t('hero_description')}
+            </p>
+
+            <p
+              className="text-sm text-[#1a237e]/80 italic mb-8 max-w-xl mx-auto border-l-2 border-[#7c3aed]/40 pl-4 text-left sm:text-center sm:border-l-0 sm:pl-0 animate-fade-up"
+              style={{ animationDelay: '0.25s' }}
+            >
+              &ldquo;{t('hero_founder_story')}&rdquo;
             </p>
 
             <div

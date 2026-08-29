@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Play, ArrowLeft } from 'lucide-react';
+import { ArrowRight, Play, ArrowLeft, Compass, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -45,7 +45,7 @@ const DEMO_STEPS = [
     description:
       'When a claim is delayed, our AI (GPT-3.5-Turbo) analyzes the status and provides a plain-language diagnosis with confidence scoring.',
     action: 'View Diagnosis',
-    link: '/claim/123456789',
+    link: '/claim/123456789#diagnosis',
   },
   {
     id: 4,
@@ -53,7 +53,7 @@ const DEMO_STEPS = [
     description:
       'Citizens receive step-by-step instructions to resolve blockers themselves — contact employer, fix KYC, update bank details, or escalate to EPFO.',
     action: 'View Resolution Steps',
-    link: '/claim/987654321',
+    link: '/claim/987654321#diagnosis',
   },
   {
     id: 5,
@@ -77,13 +77,13 @@ const DEMO_STEPS = [
     description:
       'Peer comparison, financial impact calculator, smart employer email, and know-your-rights panel — all on the claim dashboard for blocked claims.',
     action: 'View Empowerment Tools',
-    link: '/claim/123456789',
+    link: '/claim/123456789#analytics',
   },
   {
     id: 8,
     title: 'Pre-Filing KYC Health Checker',
     description:
-      'Cross-check Name, DOB, PAN, and Aadhaar before filing. Traffic-light scoring prevents 30% of claim delays caused by KYC mismatches.',
+      'Cross-check Name, DOB, PAN, and Aadhaar before filing. Traffic-light scoring catches mismatches early.',
     action: 'Check KYC Health',
     link: '/tools/kyc-check',
   },
@@ -100,17 +100,55 @@ const DEMO_STEPS = [
 export default function DemoPage() {
   const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(0);
+  const [guidedMode, setGuidedMode] = useState(true);
   const step = DEMO_STEPS[currentStep];
+
+  useEffect(() => {
+    if (!guidedMode || currentStep >= DEMO_STEPS.length - 1) return;
+    const timer = window.setTimeout(() => {
+      setCurrentStep((prev) => Math.min(prev + 1, DEMO_STEPS.length - 1));
+    }, 12000);
+    return () => window.clearTimeout(timer);
+  }, [guidedMode, currentStep]);
 
   return (
     <GovPageShell breadcrumbs={[{ label: t('footer_interactive_demo') }]}>
       <div className="container mx-auto px-4 py-8 pb-16">
         {/* Progress Bar */}
         <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
             <p className="text-sm font-medium text-[#1a237e]">
               Step {currentStep + 1} of {DEMO_STEPS.length}
             </p>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant={guidedMode ? 'default' : 'outline'}
+                className={`text-xs h-7 gap-1.5 ${guidedMode ? 'bg-epfo-indigo hover:bg-epfo-navy text-white' : ''}`}
+                onClick={() => setGuidedMode(true)}
+              >
+                <Compass className="w-3.5 h-3.5" />
+                Guided Tour
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={!guidedMode ? 'default' : 'outline'}
+                className={`text-xs h-7 gap-1.5 ${!guidedMode ? 'bg-epfo-indigo hover:bg-epfo-navy text-white' : ''}`}
+                onClick={() => setGuidedMode(false)}
+              >
+                <Map className="w-3.5 h-3.5" />
+                Explore
+              </Button>
+            </div>
+          </div>
+          {guidedMode && (
+            <p className="text-xs text-muted-foreground mb-2">
+              Guided mode auto-advances every 12 seconds. Click any step below to jump ahead.
+            </p>
+          )}
+          <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-muted-foreground">
               {Math.round(((currentStep + 1) / DEMO_STEPS.length) * 100)}% complete
             </p>

@@ -30,6 +30,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
 import { useToast } from '@/components/ui/use-toast';
+import ClaimHealthScore from '@/components/ClaimHealthScore';
 import ClaimStatusTimeline from '@/components/ClaimStatusTimeline';
 import DiagnosisPanel from '@/components/DiagnosisPanel';
 import WhatsAppPreview from '@/components/WhatsAppPreview';
@@ -78,6 +79,7 @@ export default function ClaimDetailPage() {
   const [claim, setClaim] = useState<ClaimStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('timeline');
 
   useEffect(() => {
     let cancelled = false;
@@ -94,6 +96,17 @@ export default function ClaimDetailPage() {
     load();
     return () => { cancelled = true; };
   }, [params.id]);
+
+  useEffect(() => {
+    const validTabs = ['timeline', 'diagnosis', 'analytics', 'rights', 'notifications', 'peer-comparison', 'financial-impact', 'email-tracker'];
+    const hash = window.location.hash.replace('#', '');
+    if (hash && validTabs.includes(hash)) {
+      setActiveTab(hash === 'peer-comparison' || hash === 'financial-impact' ? 'analytics' : hash === 'email-tracker' ? 'diagnosis' : hash);
+      setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
+  }, [params.id, claim?.uan]);
 
   const shareStatus = async () => {
     const text = claim
@@ -147,6 +160,24 @@ export default function ClaimDetailPage() {
   const allCompleted = Object.values(claim.stages).every((s) => s.status === 'completed');
   const claimTypeLabels = CLAIM_TYPE_LABELS[language] || CLAIM_TYPE_LABELS.en;
 
+  const TABS = [
+    { id: 'timeline', label: 'Timeline', icon: Search },
+    ...(!allCompleted
+      ? [{ id: 'diagnosis', label: 'Diagnosis', icon: Brain }]
+      : []),
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    ...(!allCompleted
+      ? [{ id: 'rights', label: 'Rights', icon: Scale }]
+      : []),
+    { id: 'notifications', label: 'Alerts', icon: MessageSquare },
+  ] as const;
+
+  const scrollToTab = (tabId: string) => {
+    setActiveTab(tabId);
+    window.history.replaceState(null, '', `#${tabId}`);
+    document.getElementById(tabId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
     <GovPageShell
       breadcrumbs={[
@@ -155,6 +186,29 @@ export default function ClaimDetailPage() {
       ]}
     >
       <div className="container mx-auto px-4 py-6 pb-16 max-w-4xl space-y-6">
+
+        <ClaimHealthScore claim={claim} />
+
+        {/* Tab navigation */}
+        <div className="sticky top-[3.5rem] z-40 -mx-4 px-4 py-2 bg-white/95 backdrop-blur border-b border-gray-100">
+          <div className="flex gap-1 overflow-x-auto scrollbar-hide">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => scrollToTab(tab.id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+                  activeTab === tab.id
+                    ? 'bg-[#1a237e] text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <tab.icon className="w-3.5 h-3.5" />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* ═══════════════════════════════════════════════
             SECTION 1: Claim Overview
@@ -218,7 +272,7 @@ export default function ClaimDetailPage() {
         {/* ═══════════════════════════════════════════════
             SECTION 2: Status & Tracking
            ═══════════════════════════════════════════════ */}
-        <div>
+        <div id="timeline">
           <SectionHeader icon={Search} title={t('claim_progress')} subtitle={t('claim_progress_subtitle')} />
           <Card className="gov-card border-gray-200">
             <CardContent className="pt-5">
@@ -231,11 +285,13 @@ export default function ClaimDetailPage() {
             SECTION 3: AI Diagnosis & Employer Action
            ═══════════════════════════════════════════════ */}
         {!allCompleted && (
-          <div>
+          <div id="diagnosis">
             <SectionHeader icon={Brain} title="AI Diagnosis & Actions" subtitle="AI-powered issue detection and recommended actions" />
             <div className="space-y-4">
               <DiagnosisPanel claim={claim} />
-              {claim.currentStage === 'employerApproval' && <EmailTracker claim={claim} />}
+              <div id="email-tracker">
+                {claim.currentStage === 'employerApproval' && <EmailTracker claim={claim} />}
+              </div>
             </div>
           </div>
         )}
@@ -243,11 +299,17 @@ export default function ClaimDetailPage() {
         {/* ═══════════════════════════════════════════════
             SECTION 4: Analytics & Insights
            ═══════════════════════════════════════════════ */}
-        <div>
+        <div id="analytics">
           <SectionHeader icon={BarChart3} title="Analytics & Financial Insights" subtitle="Compare your claim and understand the cost of delay" />
           <div className="grid md:grid-cols-2 gap-4">
-            <PeerComparison claim={claim} />
-            {!allCompleted && <FinancialImpact claim={claim} />}
+            <div id="peer-comparison">
+              <PeerComparison claim={claim} />
+            </div>
+            {!allCompleted && (
+              <div id="financial-impact">
+                <FinancialImpact claim={claim} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -255,7 +317,7 @@ export default function ClaimDetailPage() {
             SECTION 5: Legal Rights & Escalation
            ═══════════════════════════════════════════════ */}
         {!allCompleted && (
-          <div>
+          <div id="rights">
             <SectionHeader icon={Scale} title="Legal Rights & Escalation" subtitle="Know your rights and take action when needed" />
             <RightsPanel claim={claim} />
           </div>
@@ -264,7 +326,7 @@ export default function ClaimDetailPage() {
         {/* ═══════════════════════════════════════════════
             SECTION 6: Notifications
            ═══════════════════════════════════════════════ */}
-        <div>
+        <div id="notifications">
           <SectionHeader icon={MessageSquare} title={t('whatsapp_title')} subtitle={t('whatsapp_subtitle')} />
           <WhatsAppPreview claim={claim} />
         </div>
