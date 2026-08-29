@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Search, ShieldCheck, ArrowRight, HelpCircle, ExternalLink } from 'lucide-react';
@@ -21,7 +21,6 @@ import GovPageShell from '@/components/GovPageShell';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { fetchClaimStatus } from '@/lib/adapters/epfo-adapter';
 import {
-  getLastUan,
   saveLastUan,
   isValidUan,
   DEMO_UAN_LENGTH,
@@ -43,11 +42,6 @@ export default function ClaimCheckPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showUanHelp, setShowUanHelp] = useState(false);
-  const [lastUan, setLastUan] = useState<string | null>(null);
-
-  useEffect(() => {
-    setLastUan(getLastUan());
-  }, []);
 
   async function navigateToClaim(targetUan: string, tab?: string) {
     setError(null);
@@ -103,24 +97,6 @@ export default function ClaimCheckPage() {
               {t('check_no_real_epfo')}
             </p>
           </div>
-
-          {lastUan && (
-            <Card className="mb-4 border-epfo-indigo/20 bg-epfo-indigo/5">
-              <CardContent className="pt-4 pb-4">
-                <p className="text-xs text-muted-foreground mb-2">{t('check_welcome_back')}</p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full justify-between min-h-[44px] font-mono"
-                  disabled={loading}
-                  onClick={() => navigateToClaim(lastUan)}
-                >
-                  {lastUan}
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </CardContent>
-            </Card>
-          )}
 
           <Card className="gov-card border-gray-200 shadow-sm mb-4">
             <CardHeader className="pb-4">
