@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { MessageCircle, Check, CheckCheck } from 'lucide-react';
+import { MessageCircle, Check, CheckCheck, Bell } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { NotificationEvent } from '@/types/diagnosis';
 import type { ClaimStatus } from '@/types/claim';
+import { isClaimBlocked } from '@/lib/claim-navigation';
+import { differenceInDays } from 'date-fns';
 
 interface WhatsAppPreviewProps {
   claim: ClaimStatus;
@@ -24,9 +26,12 @@ interface WhatsAppPreviewProps {
 export default function WhatsAppPreview({ claim, hideHeader = false }: WhatsAppPreviewProps) {
   const { t } = useLanguage();
   const [expanded, setExpanded] = useState(false);
+  const [alertsEnabled, setAlertsEnabled] = useState(true);
 
-  // Generate mock notification history based on claim status
   const notifications = generateNotifications(claim);
+  const daysBlocked = isClaimBlocked(claim)
+    ? differenceInDays(new Date(), claim.stages[claim.currentStage].enteredAt)
+    : 0;
 
   return (
     <Card>
@@ -46,8 +51,35 @@ export default function WhatsAppPreview({ claim, hideHeader = false }: WhatsAppP
       )}
 
       <CardContent className={hideHeader ? 'pt-6' : undefined}>
-        {/* WhatsApp-style chat UI */}
-        <div className="rounded-lg border bg-[#ECE5DD] p-4 space-y-3 max-h-96 overflow-y-auto">
+        <div className="flex items-center justify-between gap-3 mb-4 p-3 rounded-lg border bg-gray-50">
+          <div className="flex items-center gap-2">
+            <Bell className="w-4 h-4 text-epfo-indigo" />
+            <span className="text-sm font-medium">{t('alerts_enable')}</span>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={alertsEnabled}
+            onClick={() => setAlertsEnabled(!alertsEnabled)}
+            className={`relative w-11 h-6 rounded-full transition-colors min-w-[44px] ${
+              alertsEnabled ? 'bg-epfo-indigo' : 'bg-gray-300'
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                alertsEnabled ? 'translate-x-5' : ''
+              }`}
+            />
+          </button>
+        </div>
+
+        {alertsEnabled && isClaimBlocked(claim) && daysBlocked > 0 && (
+          <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-3">
+            {t('alerts_missed').replace('{days}', String(daysBlocked))}
+          </p>
+        )}
+
+        <div className={`rounded-lg border bg-[#ECE5DD] p-4 space-y-3 max-h-96 overflow-y-auto ${!alertsEnabled ? 'opacity-50' : ''}`}>
           {notifications
             .slice(0, expanded ? undefined : 3)
             .map((notification, idx) => (
@@ -68,10 +100,11 @@ export default function WhatsAppPreview({ claim, hideHeader = false }: WhatsAppP
           )}
         </div>
 
-        {/* Integration note */}
         <div className="mt-4 text-xs text-muted-foreground space-y-1">
+          <p>{t('alerts_enabled_note')}</p>
           <p>{t('whatsapp_integration_note')}</p>
           <p>{t('whatsapp_benefit')}</p>
+          <p>{t('alerts_sms_fallback')}</p>
         </div>
       </CardContent>
     </Card>

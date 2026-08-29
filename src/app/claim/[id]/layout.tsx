@@ -7,9 +7,14 @@ import { FileText, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
-import ClaimHealthScore from '@/components/ClaimHealthScore';
 import ClaimOverviewCard from '@/components/claim/ClaimOverviewCard';
 import ClaimTabNav from '@/components/claim/ClaimTabNav';
+import ClaimStepper from '@/components/claim/ClaimStepper';
+import ClaimBottomNav from '@/components/claim/ClaimBottomNav';
+import ClaimContinueButton from '@/components/claim/ClaimContinueButton';
+import NextStepCard from '@/components/claim/NextStepCard';
+import EpfoCallFab from '@/components/claim/EpfoCallFab';
+import PrototypeBadge from '@/components/PrototypeBadge';
 import GovPageShell from '@/components/GovPageShell';
 import { ClaimProvider, useClaim } from '@/contexts/ClaimContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -31,11 +36,11 @@ function ClaimLayoutInner({ children }: { children: ReactNode }) {
   const { claim, loading, error, uan } = useClaim();
   const pathname = usePathname();
   const contentRef = useRef<HTMLDivElement>(null);
+  const isTimeline = pathname.endsWith('/timeline');
 
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
-    // Wait for route paint, then scroll so section title clears sticky header + tab bar
     requestAnimationFrame(() => {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
@@ -52,7 +57,7 @@ function ClaimLayoutInner({ children }: { children: ReactNode }) {
         <div className="flex items-center justify-center py-32">
           <div className="text-center space-y-3">
             <Spinner className="mx-auto h-8 w-8" />
-            <p className="text-muted-foreground text-sm">Fetching claim status...</p>
+            <p className="text-muted-foreground text-sm">{t('loading_claim')}</p>
           </div>
         </div>
       </GovPageShell>
@@ -94,26 +99,40 @@ function ClaimLayoutInner({ children }: { children: ReactNode }) {
         { label: `UAN: ${claim.uan}` },
       ]}
     >
-      <div className="container mx-auto px-4 py-6 pb-16 max-w-4xl space-y-5">
-        <ClaimHealthScore claim={claim} />
-        <ClaimOverviewCard />
+      <div className="container mx-auto px-4 py-6 pb-24 md:pb-16 max-w-4xl space-y-4">
+        <div className="flex items-center justify-between gap-2">
+          <PrototypeBadge />
+          <p className="text-[10px] text-muted-foreground text-right hidden sm:block">
+            {t('check_no_real_epfo')}
+          </p>
+        </div>
+
+        <ClaimOverviewCard compact={!isTimeline} />
+        <NextStepCard />
+        <ClaimStepper />
         <ClaimTabNav />
+
         <div
           id="claim-section"
           ref={contentRef}
           className="scroll-mt-[8.75rem] pt-2 pb-4"
         >
           {children}
+          <ClaimContinueButton />
         </div>
-        <div className="flex items-center justify-center pt-4 border-t border-gray-100">
+
+        <div className="hidden md:flex items-center justify-center pt-4 border-t border-gray-100">
           <Link href="/claim/check">
-            <Button variant="outline" className="gap-2 btn-press">
+            <Button variant="outline" className="gap-2 btn-press min-h-[44px]">
               <Search className="w-4 h-4" />
               {t('check_another_claim')}
             </Button>
           </Link>
         </div>
       </div>
+
+      <ClaimBottomNav />
+      <EpfoCallFab />
     </GovPageShell>
   );
 }

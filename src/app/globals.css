@@ -126,3 +126,7 @@
   background: linear-gradient(90deg, transparent, #3B3F8C, transparent);
   opacity: 0.2;
 }
+
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

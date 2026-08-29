@@ -12,19 +12,14 @@ import {
 } from 'lucide-react';
 import { useClaim } from '@/contexts/ClaimContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import {
-  getTabBadges,
-  type ClaimTabSlug,
-} from '@/lib/claim-navigation';
+import { getTabBadges, type ClaimTabSlug } from '@/lib/claim-navigation';
 
-type TabDef = {
+const TABS: Array<{
   slug: ClaimTabSlug;
   labelKey: string;
   icon: LucideIcon;
   hiddenWhenSettled?: boolean;
-};
-
-const TABS: TabDef[] = [
+}> = [
   { slug: 'timeline', labelKey: 'tab_status', icon: Search },
   { slug: 'diagnosis', labelKey: 'tab_fix', icon: Wrench, hiddenWhenSettled: true },
   { slug: 'analytics', labelKey: 'tab_compare', icon: BarChart3 },
@@ -32,7 +27,7 @@ const TABS: TabDef[] = [
   { slug: 'alerts', labelKey: 'tab_alerts', icon: MessageSquare },
 ];
 
-export default function ClaimTabNav() {
+export default function ClaimBottomNav() {
   const { uan, allCompleted, claim } = useClaim();
   const { t } = useLanguage();
   const pathname = usePathname();
@@ -42,36 +37,32 @@ export default function ClaimTabNav() {
 
   return (
     <nav
-      className="sticky top-[3.5rem] z-40 -mx-4 px-4 py-3 bg-white/95 backdrop-blur border-b border-gray-100 hidden md:block"
+      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 safe-area-pb"
       aria-label={t('claim_tabs_label')}
     >
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center sm:justify-start max-w-3xl mx-auto">
+      <div className="flex justify-around items-stretch max-w-lg mx-auto">
         {visibleTabs.map((tab) => {
           const href = `${base}/${tab.slug}`;
-          const isActive = pathname === href || pathname.endsWith(`/${tab.slug}`);
+          const isActive = pathname.endsWith(`/${tab.slug}`);
           const badge = badges[tab.slug];
 
           return (
             <Link
               key={tab.slug}
               href={href}
-              className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all min-h-[44px] ${
-                isActive
-                  ? 'bg-[#1a237e] text-white shadow-md'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-2 px-1 min-h-[56px] text-[10px] font-medium transition-colors ${
+                isActive ? 'text-[#1a237e]' : 'text-gray-500'
               }`}
             >
-              <tab.icon className="w-4 h-4" />
-              {t(tab.labelKey)}
-              {badge && (
-                <span
-                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-red-100 text-red-700'
-                  }`}
-                >
-                  {badge}
-                </span>
-              )}
+              <span className="relative">
+                <tab.icon className={`w-5 h-5 ${isActive ? 'text-[#1a237e]' : ''}`} />
+                {badge && (
+                  <span className="absolute -top-1 -right-2 text-[8px] font-bold bg-red-500 text-white rounded-full w-3.5 h-3.5 flex items-center justify-center">
+                    {badge.length > 1 ? '!' : badge}
+                  </span>
+                )}
+              </span>
+              <span>{t(tab.labelKey)}</span>
             </Link>
           );
         })}

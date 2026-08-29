@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import Link from 'next/link';
 import {
   Lightbulb,
   Phone,
@@ -11,8 +12,9 @@ import {
   Copy,
   Check,
   Scale,
+  Mic,
+  Square,
 } from 'lucide-react';
-import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -25,9 +27,11 @@ import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useLanguage } from '@/contexts/LanguageContext';
+import WhatIfToday from '@/components/claim/WhatIfToday';
 import type { ClaimStatus } from '@/types/claim';
 import type { Diagnosis } from '@/types/diagnosis';
 import { getResolutionGuide } from '@/lib/services/resolution-guides';
+import { isClaimBlocked } from '@/lib/claim-navigation';
 
 interface DiagnosisPanelProps {
   claim: ClaimStatus;
@@ -35,13 +39,35 @@ interface DiagnosisPanelProps {
 
 export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
   const { t } = useLanguage();
+  const blocked = isClaimBlocked(claim);
   const [diagnosis, setDiagnosis] = useState<Diagnosis | null>(null);
   const [aiSource, setAiSource] = useState<'openai' | 'rules'>('rules');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showResolution, setShowResolution] = useState(false);
+  const [showResolution, setShowResolution] = useState(blocked);
   const [copiedStep, setCopiedStep] = useState<number | null>(null);
+  const [checkedSteps, setCheckedSteps] = useState<Record<number, boolean>>({});
+  const [reading, setReading] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`checklist_${claim.uan}`);
+    if (saved) {
+      try {
+        setCheckedSteps(JSON.parse(saved));
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [claim.uan]);
+
+  const toggleCheck = (idx: number) => {
+    setCheckedSteps((prev) => {
+      const next = { ...prev, [idx]: !prev[idx] };
+      localStorage.setItem(`checklist_${claim.uan}`, JSON.stringify(next));
+      return next;
+    });
+  };
 
   const runDiagnosis = useCallback(async () => {
     setLoading(true);
@@ -61,12 +87,13 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
       const data = await res.json();
       setDiagnosis(data.diagnosis);
       setAiSource(data.source || 'rules');
+      if (blocked) setShowResolution(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Diagnosis failed');
+      setError(err instanceof Error ? err.message : t('error_diagnosis_failed'));
     } finally {
       setLoading(false);
     }
-  }, [claim]);
+  }, [claim, blocked, t]);
 
   useEffect(() => {
     runDiagnosis();
@@ -76,31 +103,35 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedStep(idx);
-      toast({ title: 'Copied!', description: 'Step copied to clipboard.' });
+      toast({ title: t('copied_title'), description: t('copied_status') });
       setTimeout(() => setCopiedStep(null), 2000);
     } catch {
-      toast({
-        title: 'Copy failed',
-        description: 'Please copy manually.',
-        variant: 'destructive',
-      });
+      toast({ title: t('error_try_again'), variant: 'destructive' });
     }
+  };
+
+  const readAloud = () => {
+    if (!diagnosis || typeof window === 'undefined' || !window.speechSynthesis) return;
+    if (reading) {
+      window.speechSynthesis.cancel();
+      setReading(false);
+      return;
+    }
+    const text = [diagnosis.problem, diagnosis.evidence].filter(Boolean).join('. ');
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.onend = () => setReading(false);
+    setReading(true);
+    window.speechSynthesis.speak(utterance);
   };
 
   if (loading) {
     return (
       <Card className="border-primary-200">
         <CardContent className="pt-6 flex flex-col items-center justify-center gap-3 py-10">
-          <div className="relative">
-            <Brain className="w-10 h-10 text-primary animate-pulse" />
-          </div>
+          <Brain className="w-10 h-10 text-primary animate-pulse" />
           <Spinner className="h-5 w-5" />
-          <span className="text-sm text-muted-foreground">
-            Running AI diagnosis on your claim...
-          </span>
-          <span className="text-xs text-muted-foreground">
-            Analyzing claim stages, timelines, and blockers
-          </span>
+          <span className="text-sm text-muted-foreground">{t('running_diagnosis')}</span>
+          <span className="text-xs text-muted-foreground">{t('diagnosis_analyzing')}</span>
         </CardContent>
       </Card>
     );
@@ -113,20 +144,13 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
           <div className="flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-warning-600 shrink-0 mt-0.5" />
             <div className="text-sm text-warning-800 flex-1">
-              <p className="font-medium">Could not run diagnosis</p>
-              <p className="text-warning-700 mt-1">
-                {error || 'Please try again later'}
-              </p>
+              <p className="font-medium">{t('error_diagnosis_failed')}</p>
+              <p className="text-warning-700 mt-1">{error || t('error_try_again')}</p>
             </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={runDiagnosis}
-            className="gap-2"
-          >
+          <Button variant="outline" size="sm" onClick={runDiagnosis} className="gap-2 min-h-[44px]">
             <RefreshCw className="w-4 h-4" />
-            Retry Diagnosis
+            {t('diagnosis_retry')}
           </Button>
         </CardContent>
       </Card>
@@ -134,7 +158,6 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
   }
 
   const guide = getResolutionGuide(diagnosis.resolution);
-  const isBlocked = claim.stages[claim.currentStage].status === 'blocked';
   const daysInStage = Math.max(
     0,
     Math.floor(
@@ -142,27 +165,30 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
         (1000 * 60 * 60 * 24),
     ),
   );
-  const showEscalate = isBlocked || daysInStage >= 7;
+  const showEscalate = blocked || daysInStage >= 7;
+  const steps =
+    diagnosis.resolutionSteps && diagnosis.resolutionSteps.length > 0
+      ? diagnosis.resolutionSteps.map((s, i) => ({
+          title: `Step ${i + 1}`,
+          description: s,
+          links: [] as Array<{ label: string; url: string }>,
+        }))
+      : guide.steps;
 
   return (
     <div className="space-y-4">
-      <Card
-        className={
-          isBlocked
-            ? 'border-danger-200 bg-danger-50'
-            : 'border-primary-200 bg-primary-50'
-        }
-      >
+      <WhatIfToday claim={claim} />
+
+      <Card className={blocked ? 'border-danger-200 bg-danger-50' : 'border-primary-200 bg-primary-50'}>
         <CardHeader>
           <div className="flex items-start gap-3">
-            <Lightbulb
-              className={`w-6 h-6 shrink-0 ${isBlocked ? 'text-danger-600' : 'text-primary-600'}`}
-            />
+            <Lightbulb className={`w-6 h-6 shrink-0 ${blocked ? 'text-danger-600' : 'text-primary-600'}`} />
             <div className="flex-1">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">
+                {blocked ? t('issue_detected') : t('diagnosis_title')}
+              </p>
               <div className="flex items-center gap-2 flex-wrap">
-                <CardTitle className="text-lg">
-                  {isBlocked ? 'Issue Detected' : 'AI Diagnosis'}
-                </CardTitle>
+                <CardTitle className="text-lg">{diagnosis.problem}</CardTitle>
                 <Badge
                   variant="outline"
                   className={`text-[10px] h-5 ${
@@ -174,26 +200,16 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
                   {aiSource === 'openai' ? t('diagnosis_gpt_powered') : t('diagnosis_rule_based')}
                 </Badge>
               </div>
-              <CardDescription
-                className={isBlocked ? 'text-danger-700' : 'text-primary-700'}
-              >
-                Confidence: {Math.round(diagnosis.confidence * 100)}%
+              <CardDescription className={blocked ? 'text-danger-700' : 'text-primary-700'}>
+                {t('confidence')} {Math.round(diagnosis.confidence * 100)}%
               </CardDescription>
             </div>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-3">
-          <p
-            className={`font-medium ${isBlocked ? 'text-danger-900' : 'text-primary-900'}`}
-          >
-            {diagnosis.problem}
-          </p>
-
           {diagnosis.evidence && (
-            <p
-              className={`text-sm ${isBlocked ? 'text-danger-700' : 'text-primary-700'}`}
-            >
+            <p className={`text-sm ${blocked ? 'text-danger-700' : 'text-primary-700'}`}>
               {diagnosis.evidence}
             </p>
           )}
@@ -201,20 +217,29 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
           <div className="flex gap-2 flex-wrap">
             <Button
               onClick={() => setShowResolution(!showResolution)}
-              variant={isBlocked ? 'destructive' : 'default'}
-              className="sm:w-auto"
+              variant={blocked ? 'destructive' : 'default'}
+              className="min-h-[44px]"
             >
-              {showResolution ? 'Hide' : 'Show'} Resolution Steps
+              {showResolution ? t('hide_resolution') : t('show_resolution')}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={readAloud}
+              className="gap-2 min-h-[44px]"
+            >
+              {reading ? <Square className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              {t('diagnosis_read_aloud')}
             </Button>
             {showEscalate && (
               <Link href={`/tools/escalate?uan=${claim.uan}`}>
-                <Button variant="outline" className="gap-2 sm:w-auto border-red-200 text-red-800 hover:bg-red-50">
+                <Button variant="outline" className="gap-2 min-h-[44px] border-red-200 text-red-800 hover:bg-red-50">
                   <Scale className="w-4 h-4" />
                   {t('diagnosis_escalate_cta')}
                 </Button>
               </Link>
             )}
-            <Button variant="outline" size="icon" onClick={runDiagnosis} aria-label="Re-run diagnosis">
+            <Button variant="outline" size="icon" onClick={runDiagnosis} className="min-h-[44px] min-w-[44px]" aria-label={t('diagnosis_retry')}>
               <RefreshCw className="w-4 h-4" />
             </Button>
           </div>
@@ -226,82 +251,71 @@ export default function DiagnosisPanel({ claim }: DiagnosisPanelProps) {
           <CardHeader>
             <CardTitle className="text-lg">{guide.title}</CardTitle>
             <CardDescription>{guide.description}</CardDescription>
-            <div className="flex flex-wrap gap-2 mt-2">
-              <Badge variant="outline" className="text-xs">
-                Estimated: {guide.estimatedTime}
-              </Badge>
-            </div>
+            <Badge variant="outline" className="text-xs w-fit mt-2">
+              {guide.estimatedTime}
+            </Badge>
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <div className="space-y-4">
-              {diagnosis.resolutionSteps && diagnosis.resolutionSteps.length > 0
-                ? diagnosis.resolutionSteps.map((step, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-start gap-3 group"
-                    >
-                      <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold shrink-0">
-                        {idx + 1}
-                      </div>
-                      <p className="text-sm pt-0.5 flex-1">{step}</p>
-                      <button
-                        onClick={() => copyToClipboard(step, idx)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-muted"
-                        aria-label={`Copy step ${idx + 1}`}
-                      >
-                        {copiedStep === idx ? (
-                          <Check className="w-3.5 h-3.5 text-secondary" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+            <p className="text-sm font-semibold text-[#1a237e]">{t('diagnosis_checklist_title')}</p>
+            <div className="space-y-3">
+              {steps.map((step, idx) => (
+                <div key={idx} className="rounded-lg border p-3 bg-gray-50/50">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!checkedSteps[idx]}
+                      onChange={() => toggleCheck(idx)}
+                      className="mt-1 h-4 w-4 rounded border-gray-300"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm">{step.title}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-8 gap-1 text-xs"
+                          onClick={() => copyToClipboard(step.description, idx)}
+                        >
+                          {copiedStep === idx ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                          {t('diagnosis_step_copy')}
+                        </Button>
+                        {guide.helplineNumbers[0] && (
+                          <a href="tel:14470">
+                            <Button type="button" variant="outline" size="sm" className="h-8 gap-1 text-xs">
+                              <Phone className="w-3 h-3" />
+                              {t('diagnosis_step_call')}
+                            </Button>
+                          </a>
                         )}
-                      </button>
-                    </div>
-                  ))
-                : guide.steps.map((step, idx) => (
-                    <div key={idx} className="space-y-2">
-                      <div className="flex items-start gap-3">
-                        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold shrink-0">
-                          {idx + 1}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium text-sm">{step.title}</p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {step.description}
-                          </p>
-                          {step.links && step.links.length > 0 && (
-                            <div className="mt-2 space-y-1">
-                              {step.links.map((link, linkIdx) => (
-                                <a
-                                  key={linkIdx}
-                                  href={link.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-                                >
-                                  <ExternalLink className="w-3 h-3" />
-                                  {link.label}
-                                </a>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                        {step.links?.map((link, linkIdx) => (
+                          <a key={linkIdx} href={link.url} target="_blank" rel="noopener noreferrer">
+                            <Button type="button" variant="outline" size="sm" className="h-8 gap-1 text-xs">
+                              <ExternalLink className="w-3 h-3" />
+                              {link.label || t('diagnosis_step_open')}
+                            </Button>
+                          </a>
+                        ))}
                       </div>
                     </div>
-                  ))}
+                  </label>
+                </div>
+              ))}
             </div>
 
             {guide.helplineNumbers.length > 0 && (
               <div className="border-t pt-4">
                 <p className="text-sm font-medium mb-2 flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  EPFO Helpline Numbers
+                  {t('diagnosis_helpline')}
                 </p>
                 <div className="space-y-1">
                   {guide.helplineNumbers.map((number, idx) => (
-                    <p key={idx} className="text-sm text-muted-foreground">
+                    <a key={idx} href="tel:14470" className="block text-sm text-epfo-indigo hover:underline">
                       {number}
-                    </p>
+                    </a>
                   ))}
                 </div>
               </div>

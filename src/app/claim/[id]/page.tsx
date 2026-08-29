@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Spinner } from '@/components/ui/spinner';
+import { fetchClaimStatus } from '@/lib/adapters/epfo-adapter';
+import { getDefaultTab } from '@/lib/claim-navigation';
 
 export default function ClaimIndexPage() {
   const params = useParams<{ id: string }>();
@@ -21,8 +23,29 @@ export default function ClaimIndexPage() {
       'financial-impact': 'analytics',
       'email-tracker': 'diagnosis',
     };
-    const section = hash && legacy[hash] ? legacy[hash] : 'timeline';
-    router.replace(`/claim/${params.id}/${section}`);
+
+    if (hash && legacy[hash]) {
+      router.replace(`/claim/${params.id}/${legacy[hash]}`);
+      return;
+    }
+
+    let cancelled = false;
+    async function redirect() {
+      try {
+        const claim = await fetchClaimStatus(params.id);
+        if (!cancelled) {
+          router.replace(`/claim/${params.id}/${getDefaultTab(claim)}`);
+        }
+      } catch {
+        if (!cancelled) {
+          router.replace(`/claim/${params.id}/timeline`);
+        }
+      }
+    }
+    redirect();
+    return () => {
+      cancelled = true;
+    };
   }, [params.id, router]);
 
   return (

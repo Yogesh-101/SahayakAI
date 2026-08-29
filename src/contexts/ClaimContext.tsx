@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { useParams } from 'next/navigation';
 import { fetchClaimStatus } from '@/lib/adapters/epfo-adapter';
+import { saveLastUan } from '@/lib/claim-session';
 import type { ClaimStatus } from '@/types/claim';
 
 interface ClaimContextValue {
@@ -36,7 +37,10 @@ export function ClaimProvider({ children }: { children: ReactNode }) {
       setError(null);
       try {
         const data = await fetchClaimStatus(uan);
-        if (!cancelled) setClaim(data);
+        if (!cancelled) {
+          setClaim(data);
+          saveLastUan(uan);
+        }
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Failed to load claim');

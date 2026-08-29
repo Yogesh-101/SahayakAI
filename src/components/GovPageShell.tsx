@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { ArrowLeft, ArrowUp, Home, ChevronRight, Phone, FileText, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LanguageToggle from '@/components/LanguageToggle';
+import MobileNav from '@/components/MobileNav';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Breadcrumb {
@@ -72,10 +73,11 @@ export default function GovPageShell({
                 </Link>
               ))}
             </div>
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <MobileNav />
               <LanguageToggle />
-              <Link href="/claim/check">
-                <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-8 px-4 text-xs">
+              <Link href="/claim/check" className="hidden xs:block">
+                <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-9 px-3 sm:px-4 text-xs min-h-[44px]">
                   {t('cta_check_status')}
                 </Button>
               </Link>

@@ -23,9 +23,21 @@ This project follows the Build What Moves India rules:
 | No government logos implying approval | Removed Government of India bar, national emblem assets, and EPFO-watermarked hero image |
 | Original work | Built for this hackathon; mock data and original SahayakAI branding |
 
----
+### Citizen journey (end-to-end)
 
-## 🎯 The Problem
+1. **Home** → Choose Track / Fix / Escalate, or enter UAN at `/claim/check`
+2. **Check** → UAN validation, problem picker, one-tap demo UANs, welcome-back shortcut
+3. **Dashboard** → Smart default tab (blocked → Fix, settled → Alerts), Next Step card, journey stepper
+4. **Fix** → AI diagnosis, expanded resolution checklist, read-aloud, escalate CTA
+5. **Compare** → Peer stats + daily financial loss (₹/day highlighted)
+6. **Rights** → Priority right card + contextual legal guidance
+7. **Alerts** → WhatsApp mock preview with enable toggle
+
+**Mobile:** Hamburger menu, bottom tab bar on claim pages, 44px+ tap targets, Call EPFO FAB on blocked claims.
+
+**Honesty:** Persistent "Demo · Mock Data" badge; no real EPFO access disclosed on check and claim pages.
+
+---
 
 ### Why I built this
 

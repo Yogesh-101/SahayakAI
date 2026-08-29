@@ -34,11 +34,19 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import LanguageToggle from '@/components/LanguageToggle';
+import MobileNav from '@/components/MobileNav';
+import PrototypeBadge from '@/components/PrototypeBadge';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { getLastUan } from '@/lib/claim-session';
 
 export default function Home() {
   const { t } = useLanguage();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [lastUan, setLastUan] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLastUan(getLastUan());
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -66,13 +74,22 @@ export default function Home() {
     { icon: MessageCircle, title: t('feature_whatsapp_title'), description: t('feature_whatsapp_desc') },
   ];
 
+  const demoUan = lastUan ?? '123456789';
+  const hasUan = !!lastUan;
+
+  const ENTRY_POINTS = [
+    { icon: Search, title: t('entry_track_title'), description: t('entry_track_desc'), href: '/claim/check', color: 'text-epfo-indigo', bg: 'bg-indigo-50', border: 'border-indigo-200' },
+    { icon: Brain, title: t('entry_fix_title'), description: t('entry_fix_desc'), href: hasUan ? `/claim/${demoUan}/diagnosis` : '/claim/check', color: 'text-purple-600', bg: 'bg-purple-50', border: 'border-purple-200' },
+    { icon: Scale, title: t('entry_escalate_title'), description: t('entry_escalate_desc'), href: hasUan ? `/tools/escalate?uan=${demoUan}` : '/claim/check', color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-200' },
+  ];
+
   const TOOLS = [
-    { icon: ShieldCheck, title: t('tool_kyc_title'), description: t('tool_kyc_desc'), href: '/tools/kyc-check', color: 'text-green-600', bgColor: 'bg-green-50', borderColor: 'border-green-200' },
-    { icon: Scale, title: t('tool_legal_title'), description: t('tool_legal_desc'), href: '/tools/escalate', color: 'text-red-600', bgColor: 'bg-red-50', borderColor: 'border-red-200' },
-    { icon: IndianRupee, title: t('tool_finance_title'), description: t('tool_finance_desc'), href: '/claim/123456789/analytics', color: 'text-amber-600', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
-    { icon: BarChart3, title: t('tool_peer_title'), description: t('tool_peer_desc'), href: '/claim/123456789/analytics', color: 'text-blue-600', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
-    { icon: Mail, title: t('tool_email_title'), description: t('tool_email_desc'), href: '/claim/123456789/diagnosis', color: 'text-purple-600', bgColor: 'bg-purple-50', borderColor: 'border-purple-200' },
-    { icon: BookOpen, title: t('tool_rights_title'), description: t('tool_rights_desc'), href: '/claim/123456789/rights', color: 'text-indigo-600', bgColor: 'bg-indigo-50', borderColor: 'border-indigo-200' },
+    { icon: ShieldCheck, title: t('tool_kyc_title'), description: t('tool_kyc_desc'), href: '/tools/kyc-check', color: 'text-green-600', bgColor: 'bg-green-50', borderColor: 'border-green-200', needsUan: false },
+    { icon: Scale, title: t('tool_legal_title'), description: t('tool_legal_desc'), href: hasUan ? `/tools/escalate?uan=${demoUan}` : '/claim/check', color: 'text-red-600', bgColor: 'bg-red-50', borderColor: 'border-red-200', needsUan: true },
+    { icon: IndianRupee, title: t('tool_finance_title'), description: t('tool_finance_desc'), href: hasUan ? `/claim/${demoUan}/analytics` : '/claim/check', color: 'text-amber-600', bgColor: 'bg-amber-50', borderColor: 'border-amber-200', needsUan: true },
+    { icon: BarChart3, title: t('tool_peer_title'), description: t('tool_peer_desc'), href: hasUan ? `/claim/${demoUan}/analytics` : '/claim/check', color: 'text-blue-600', bgColor: 'bg-blue-50', borderColor: 'border-blue-200', needsUan: true },
+    { icon: Mail, title: t('tool_email_title'), description: t('tool_email_desc'), href: hasUan ? `/claim/${demoUan}/diagnosis` : '/claim/check', color: 'text-purple-600', bgColor: 'bg-purple-50', borderColor: 'border-purple-200', needsUan: true },
+    { icon: BookOpen, title: t('tool_rights_title'), description: t('tool_rights_desc'), href: hasUan ? `/claim/${demoUan}/rights` : '/claim/check', color: 'text-indigo-600', bgColor: 'bg-indigo-50', borderColor: 'border-indigo-200', needsUan: true },
   ];
 
   const STATS = [
@@ -106,10 +123,11 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <MobileNav />
               <LanguageToggle />
               <Link href="/claim/check">
-                <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-8 px-4 text-xs">
+                <Button size="sm" className="bg-epfo-indigo hover:bg-epfo-navy text-white btn-press h-9 px-3 sm:px-4 text-xs min-h-[44px]">
                   {t('cta_check_status')}
                 </Button>
               </Link>
@@ -144,6 +162,28 @@ export default function Home() {
           </Link>
         </div>
       </div>
+
+      {/* ── 3 Entry Points ───────────────────────────── */}
+      <section className="py-8 bg-white border-b">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto grid sm:grid-cols-3 gap-3">
+            {ENTRY_POINTS.map((entry) => (
+              <Link key={entry.title} href={entry.href}>
+                <div className={`gov-card h-full rounded-xl border ${entry.border} p-4 hover:shadow-md transition-all min-h-[100px]`}>
+                  <div className={`w-9 h-9 rounded-lg ${entry.bg} flex items-center justify-center mb-2`}>
+                    <entry.icon className={`w-4 h-4 ${entry.color}`} />
+                  </div>
+                  <h3 className="font-semibold text-sm text-[#1a237e]">{entry.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{entry.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="flex justify-center mt-4">
+            <PrototypeBadge />
+          </div>
+        </div>
+      </section>
 
       {/* ── Hero Section (centered) ─────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#f0eaf8] via-[#ebe3f5] to-white py-14 sm:py-16 lg:py-20">
@@ -348,6 +388,9 @@ export default function Home() {
                       <ChevronRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                     </h3>
                     <p className="text-xs text-muted-foreground">{tool.description}</p>
+                    {!hasUan && tool.needsUan && (
+                      <p className="text-[10px] text-amber-700 mt-2">{t('tools_check_first')}</p>
+                    )}
                   </div>
                 </Link>
               ))}
@@ -461,7 +504,7 @@ export default function Home() {
       {/* ── Scroll-to-top ────────────────────────────── */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full bg-epfo-indigo text-white shadow-lg flex items-center justify-center transition-all duration-300 btn-press ${
+        className={`fixed bottom-20 md:bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-epfo-indigo text-white shadow-lg flex items-center justify-center transition-all duration-300 btn-press ${
           showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
         aria-label="Scroll to top"

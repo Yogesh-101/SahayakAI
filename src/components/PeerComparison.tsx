@@ -3,6 +3,7 @@
 import { BarChart3, TrendingUp, Building2, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/contexts/LanguageContext';
 import type { ClaimStatus } from '@/types/claim';
 import { differenceInDays } from 'date-fns';
 
@@ -54,6 +55,7 @@ function getMockPeerData(claim: ClaimStatus): PeerData {
 }
 
 export default function PeerComparison({ claim }: PeerComparisonProps) {
+  const { t } = useLanguage();
   const daysInProcess = differenceInDays(new Date(), claim.filingDate);
   const peerData = getMockPeerData(claim);
 
@@ -133,7 +135,7 @@ export default function PeerComparison({ claim }: PeerComparisonProps) {
           {Object.entries(peerData.stageAverage).map(([stage, days]) => {
             const labels: Record<string, string> = {
               employerApproval: 'Employer Approval',
-              kycVerification: 'KYC Verification',
+              kycVerification: t('stage_kyc_plain'),
               epfoSanction: 'EPFO Sanction',
               paymentProcessing: 'Payment Processing',
             };
@@ -148,7 +150,7 @@ export default function PeerComparison({ claim }: PeerComparisonProps) {
         </div>
 
         <p className="text-[10px] text-muted-foreground text-center">
-          Based on {peerData.totalClaims.toLocaleString()} similar claims (mock data for demo)
+          {t('analytics_mock_data')}
         </p>
       </CardContent>
     </Card>

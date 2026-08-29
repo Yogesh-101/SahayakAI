@@ -7,10 +7,12 @@ import DiagnosisPanel from '@/components/DiagnosisPanel';
 import EmailTracker from '@/components/EmailTracker';
 import ClaimSection from '@/components/claim/ClaimSection';
 import { useClaim } from '@/contexts/ClaimContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ClaimDiagnosisPage() {
   const { claim, allCompleted } = useClaim();
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (allCompleted) {
@@ -23,8 +25,8 @@ export default function ClaimDiagnosisPage() {
   return (
     <ClaimSection
       icon={Brain}
-      title="AI Diagnosis & Actions"
-      subtitle="AI-powered issue detection and recommended actions"
+      title={t('section_diagnosis_title')}
+      subtitle={t('section_diagnosis_subtitle')}
     >
       <div className="space-y-4">
         <DiagnosisPanel claim={claim} />
