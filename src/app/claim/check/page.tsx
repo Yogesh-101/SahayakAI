@@ -36,7 +36,7 @@ export default function ClaimCheckPage() {
     try {
       await fetchClaimStatus(uan);
       toast({ title: 'Claim found!', description: `Navigating to claim ${uan}...` });
-      router.push(`/claim/${uan}`);
+      router.push(`/claim/${uan}/timeline`);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Something went wrong';
       setError(msg);

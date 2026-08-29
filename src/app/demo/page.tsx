@@ -45,7 +45,7 @@ const DEMO_STEPS = [
     description:
       'When a claim is delayed, our AI (GPT-3.5-Turbo) analyzes the status and provides a plain-language diagnosis with confidence scoring.',
     action: 'View Diagnosis',
-    link: '/claim/123456789#diagnosis',
+    link: '/claim/123456789/diagnosis',
   },
   {
     id: 4,
@@ -53,7 +53,7 @@ const DEMO_STEPS = [
     description:
       'Citizens receive step-by-step instructions to resolve blockers themselves — contact employer, fix KYC, update bank details, or escalate to EPFO.',
     action: 'View Resolution Steps',
-    link: '/claim/987654321#diagnosis',
+    link: '/claim/987654321/diagnosis',
   },
   {
     id: 5,
@@ -61,7 +61,7 @@ const DEMO_STEPS = [
     description:
       'Preview how WhatsApp alerts would look at each stage change, blocker detection, and settlement — not sent to a real phone.',
     action: 'View Notifications',
-    link: '/claim/111111111',
+    link: '/claim/111111111/alerts',
   },
   {
     id: 6,
@@ -77,7 +77,7 @@ const DEMO_STEPS = [
     description:
       'Peer comparison, financial impact calculator, smart employer email, and know-your-rights panel — all on the claim dashboard for blocked claims.',
     action: 'View Empowerment Tools',
-    link: '/claim/123456789#analytics',
+    link: '/claim/123456789/analytics',
   },
   {
     id: 8,
@@ -190,7 +190,7 @@ export default function DemoPage() {
                   </p>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {step.demoUANs.map((demo) => (
-                      <Link key={demo.uan} href={`/claim/${demo.uan}`}>
+                      <Link key={demo.uan} href={`/claim/${demo.uan}/timeline`}>
                         <Card className="cursor-pointer hover:border-epfo-indigo hover:shadow-sm transition-all gov-card">
                           <CardContent className="pt-4">
                             <div className="flex items-center justify-between">
