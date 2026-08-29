@@ -38,6 +38,7 @@ import MobileNav from '@/components/MobileNav';
 import PrototypeBadge from '@/components/PrototypeBadge';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { getLastUan } from '@/lib/claim-session';
+import { PROBLEM_SCENARIOS } from '@/lib/claim-navigation';
 
 export default function Home() {
   const { t } = useLanguage();
@@ -91,6 +92,13 @@ export default function Home() {
     { icon: Mail, title: t('tool_email_title'), description: t('tool_email_desc'), href: hasUan ? `/claim/${demoUan}/diagnosis` : '/claim/check', color: 'text-purple-600', bgColor: 'bg-purple-50', borderColor: 'border-purple-200', needsUan: true },
     { icon: BookOpen, title: t('tool_rights_title'), description: t('tool_rights_desc'), href: hasUan ? `/claim/${demoUan}/rights` : '/claim/check', color: 'text-indigo-600', bgColor: 'bg-indigo-50', borderColor: 'border-indigo-200', needsUan: true },
   ];
+
+  const DEMO_CLAIMS = [
+    { uan: '123456789', labelKey: 'problem_employer', tab: 'diagnosis' },
+    { uan: '987654321', labelKey: 'problem_kyc', tab: 'diagnosis' },
+    { uan: '555555555', labelKey: 'problem_processing', tab: 'timeline' },
+    { uan: '111111111', labelKey: 'problem_payment', tab: 'alerts' },
+  ] as const;
 
   const STATS = [
     { value: '8Cr+', label: t('stat_epfo_members') },
@@ -162,28 +170,6 @@ export default function Home() {
           </Link>
         </div>
       </div>
-
-      {/* ── 3 Entry Points ───────────────────────────── */}
-      <section className="py-8 bg-white border-b">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto grid sm:grid-cols-3 gap-3">
-            {ENTRY_POINTS.map((entry) => (
-              <Link key={entry.title} href={entry.href}>
-                <div className={`gov-card h-full rounded-xl border ${entry.border} p-4 hover:shadow-md transition-all min-h-[100px]`}>
-                  <div className={`w-9 h-9 rounded-lg ${entry.bg} flex items-center justify-center mb-2`}>
-                    <entry.icon className={`w-4 h-4 ${entry.color}`} />
-                  </div>
-                  <h3 className="font-semibold text-sm text-[#1a237e]">{entry.title}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">{entry.description}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <div className="flex justify-center mt-4">
-            <PrototypeBadge />
-          </div>
-        </div>
-      </section>
 
       {/* ── Hero Section (centered) ─────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#f0eaf8] via-[#ebe3f5] to-white py-14 sm:py-16 lg:py-20">
@@ -270,6 +256,77 @@ export default function Home() {
                   <div className="text-[10px] text-gray-500 mt-0.5 leading-snug">{stat.label}</div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Quick Start: entry points + scenarios + demo UANs ─ */}
+      <section className="py-10 bg-white border-b border-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="text-center">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#1a237e] mb-1">
+                {t('home_quick_start_title')}
+              </h2>
+              <p className="text-sm text-muted-foreground">{t('home_quick_start_subtitle')}</p>
+              <div className="flex justify-center mt-3">
+                <PrototypeBadge />
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-3">
+              {ENTRY_POINTS.map((entry) => (
+                <Link key={entry.title} href={entry.href} className="h-full">
+                  <div className={`gov-card h-full rounded-xl border ${entry.border} p-4 hover:shadow-md transition-all min-h-[132px] flex flex-col`}>
+                    <div className={`w-9 h-9 rounded-lg ${entry.bg} flex items-center justify-center mb-2 shrink-0`}>
+                      <entry.icon className={`w-4 h-4 ${entry.color}`} />
+                    </div>
+                    <h3 className="font-semibold text-sm text-[#1a237e]">{entry.title}</h3>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed flex-1">{entry.description}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <div className="rounded-xl border border-indigo-200 bg-indigo-50/40 p-4 sm:p-5">
+              <h3 className="text-sm font-semibold text-indigo-900 mb-3">
+                {t('check_problem_picker_title')}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {PROBLEM_SCENARIOS.map((scenario) => (
+                  <Link
+                    key={scenario.id}
+                    href={`/claim/${scenario.uan}/${scenario.tab}`}
+                    className="text-left px-3 py-3 bg-white rounded-lg border border-indigo-200 hover:border-epfo-indigo hover:shadow-sm transition-all min-h-[48px] text-sm flex items-center"
+                  >
+                    {t(scenario.labelKey)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 sm:p-5">
+              <div className="text-xs font-semibold text-amber-800 mb-3 flex items-center gap-1.5">
+                <Badge variant="outline" className="text-[10px] bg-amber-100 border-amber-300">
+                  {t('demo_uans')}
+                </Badge>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-2">
+                {DEMO_CLAIMS.map((demo) => (
+                  <Link
+                    key={demo.uan}
+                    href={`/claim/${demo.uan}/${demo.tab}`}
+                    className="flex items-center justify-between px-3 py-3 bg-white rounded-lg border border-amber-200 hover:border-epfo-indigo hover:shadow-sm transition-all min-h-[48px] group"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="font-mono font-medium text-sm text-[#1a237e] shrink-0">{demo.uan}</span>
+                      <span className="text-xs text-muted-foreground truncate">{t(demo.labelKey)}</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-epfo-indigo shrink-0" />
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -24,8 +24,9 @@ import {
   getLastUan,
   saveLastUan,
   isValidUan,
+  DEMO_UAN_LENGTH,
 } from '@/lib/claim-session';
-import { getDefaultTab, PROBLEM_SCENARIOS } from '@/lib/claim-navigation';
+import { getDefaultTab } from '@/lib/claim-navigation';
 
 const DEMO_CLAIMS = [
   { uan: '123456789', labelKey: 'problem_employer', tab: 'diagnosis' as const },
@@ -133,9 +134,9 @@ export default function ClaimCheckPage() {
                     id="uan"
                     type="text"
                     inputMode="numeric"
-                    maxLength={12}
+                    maxLength={DEMO_UAN_LENGTH}
                     value={uan}
-                    onChange={(e) => setUan(e.target.value.replace(/\D/g, ''))}
+                    onChange={(e) => setUan(e.target.value.replace(/\D/g, '').slice(0, DEMO_UAN_LENGTH))}
                     placeholder={t('uan_placeholder')}
                     className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-epfo-indigo/50 focus-visible:border-epfo-indigo"
                     disabled={loading}
@@ -143,7 +144,7 @@ export default function ClaimCheckPage() {
                     autoComplete="off"
                     aria-invalid={uan.length > 0 && !isValidUan(uan)}
                   />
-                  <VoiceInput onTranscript={(text) => setUan(text.replace(/\D/g, '').slice(0, 12))} />
+                  <VoiceInput onTranscript={(text) => setUan(text.replace(/\D/g, '').slice(0, DEMO_UAN_LENGTH))} />
                 </div>
 
                 {uan.length > 0 && !isValidUan(uan) && (
@@ -203,34 +204,13 @@ export default function ClaimCheckPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-indigo-200 bg-indigo-50/30 mb-4">
-            <CardContent className="pt-5">
-              <p className="text-xs font-semibold text-indigo-900 mb-3">
-                {t('check_problem_picker_title')}
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {PROBLEM_SCENARIOS.map((scenario) => (
-                  <button
-                    key={scenario.id}
-                    type="button"
-                    disabled={loading}
-                    onClick={() => navigateToClaim(scenario.uan, scenario.tab)}
-                    className="text-left px-3 py-3 bg-white rounded-lg border border-indigo-200 hover:border-epfo-indigo hover:shadow-sm transition-all min-h-[44px] text-sm"
-                  >
-                    {t(scenario.labelKey)}
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
           <Card className="border-amber-200 bg-amber-50/50">
             <CardContent className="pt-5">
-              <p className="text-xs font-semibold text-amber-800 mb-3 flex items-center gap-1.5">
+              <div className="text-xs font-semibold text-amber-800 mb-3 flex items-center gap-1.5">
                 <Badge variant="outline" className="text-[10px] bg-amber-100 border-amber-300">
                   {t('demo_uans')}
                 </Badge>
-              </p>
+              </div>
               <div className="space-y-2">
                 {DEMO_CLAIMS.map((demo) => (
                   <button
